@@ -15,10 +15,6 @@ const ChatSiderBar = ({ onRoomClick, selectedConversationId }) => {
     const [lastMessages, setLastMessages] = useState({});
     const [unreadMessagesCountMap, setUnreadMessagesCountMap] = useState({});
 
-
-
-
-
     useEffect(() => {
         dispatch(actions.getAllUser());
     }, [dispatch]);
@@ -122,10 +118,32 @@ const ChatSiderBar = ({ onRoomClick, selectedConversationId }) => {
         };
     }, []);
     userConversations.sort((roomA, roomB) => {
-        const unreadCountA = unreadMessagesCountMap[roomA.id] || 0;
-        const unreadCountB = unreadMessagesCountMap[roomB.id] || 0;
-        return unreadCountB - unreadCountA; // Sắp xếp giảm dần theo số tin nhắn chưa đọc
+        const lastMessageA = lastMessages[roomA.id];
+        const lastMessageB = lastMessages[roomB.id];
+        if (!lastMessageA && !lastMessageB) return 0;
+        if (!lastMessageA) return 1;
+        if (!lastMessageB) return -1;
+        return moment(lastMessageB.time).valueOf() - moment(lastMessageA.time).valueOf();
     });
+
+
+    useEffect(() => {
+        const fetchLastMessages = async () => {
+            try {
+                const messagesPromises = userConversations.map(chatRoom => getMessageLastedByRoom(chatRoom.id));
+                const lastMessagesData = await Promise.all(messagesPromises);
+                const lastMessagesObj = {};
+                lastMessagesData.forEach((message, index) => {
+                    lastMessagesObj[userConversations[index].id] = message;
+                });
+                setLastMessages(lastMessagesObj);
+            } catch (error) {
+                console.error("Error fetching last messages:", error);
+            }
+        };
+
+        fetchLastMessages();
+    }, [userConversations]);
 
     return (
         <div className="h-screen">
@@ -161,14 +179,16 @@ const ChatSiderBar = ({ onRoomClick, selectedConversationId }) => {
                                         </div>
                                         <div className="flex flex-col items-center text-sm">
                                             <span className="text-gray-300">
-                                                {lastMessages[chatRoom.id] && moment(lastMessages[chatRoom.id].time).tz("Asia/Ho_Chi_Minh").format('HH:mm')}
+                                                {lastMessages[chatRoom.id] && moment(lastMessages[chatRoom.id].time).tz("Asia/Ho_Chi_Minh").format('DD/MM')}
                                             </span>
                                             {unreadMessagesCountMap[chatRoom.id] > 0 && (
                                                 <p className='bg-red-600 flex justify-center items-center text-white w-4 h-4 rounded-full'>
                                                     {unreadMessagesCountMap[chatRoom.id]}
                                                 </p>
                                             )}
+
                                         </div>
+
                                     </li>
                                 );
                             })}
