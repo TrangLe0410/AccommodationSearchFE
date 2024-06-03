@@ -1,0 +1,257 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.star-item {
+    display: inline-block;
+    margin-bottom: 6px;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    height: 5px;
+}
+
+.bg-black {
+    --tw-bg-opacity: 1;
+    background-color: rgb(28 36 52 / var(--tw-bg-opacity));
+}
+
+.text-bodydark1 {
+    --tw-text-opacity: 1;
+    color: rgb(222 228 238 / var(--tw-text-opacity));
+}
+
+.hover\:bg-graydark:hover {
+    --tw-bg-opacity: 1;
+    background-color: rgb(51 58 72 / var(--tw-bg-opacity));
+}
+
+.bg-hover {
+    background-color: rgb(51 58 72 / var(--tw-bg-opacity));
+}
+
+
+.bg-color {
+    background-color: rgb(241 245 249 / var(--tw-bg-opacity));
+
+}
+
+.text-bodydark2 {
+    --tw-text-opacity: 1;
+    color: rgb(138 153 175 / var(--tw-text-opacity));
+}
+
+input[type="range"]::-moz-range-track {
+    -moz-appearance: none;
+    height: 5px;
+}
+
+input[type="range"]::-ms-track {
+    appearance: none;
+    height: 5px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 2rem;
+    height: 2rem;
+    background-color: white;
+    border: solid 1px #ccc;
+    border-radius: 1rem;
+    margin-top: -0.6rem;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+    border: solid 1px rgb(144, 211, 255);
+}
+
+input[type="range"]::-moz-range-thumb {
+    -moz-appearance: none;
+    width: 2rem;
+    height: 2rem;
+    background-color: white;
+    border: solid 1px #ccc;
+    border-radius: 1rem;
+    margin-top: -0.6rem;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb:active {
+    border: solid 1px rgb(144, 211, 255);
+}
+
+input[type="range"]::-ms-thumb {
+    appearance: none;
+    width: 2rem;
+    height: 2rem;
+    background-color: white;
+    border: solid 1px #ccc;
+    border-radius: 1rem;
+    margin-top: -0.6rem;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+input[type="range"]::-ms-thumb:active {
+    border: solid 1px rgb(144, 211, 255);
+}
+
+button.slick-arrow::before {
+    font-size: 50px !important;
+    color: #00B98E !important;
+}
+
+.slick-next {
+    right: 35px !important;
+    top: 45% !important;
+}
+
+.input {
+    display: flex !important;
+    flex-direction: row !important;
+}
+
+.slick-prev {
+    left: 10px !important;
+    z-index: 10 !important;
+    top: 45% !important;
+}
+
+
+
+.flex-row {
+    display: flex;
+    flex-direction: column;
+    /* Hoặc có thể sử dụng 'row' tùy thuộc vào thiết kế mong muốn */
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 90px;
+    background-color: #18191A;
+    color: gainsboro;
+    text-align: center;
+    font-size: 12px;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    top: 120%;
+    /* Thay đổi từ bottom sang top */
+    left: 80%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    /* Adjust this value to position the badge */
+    right: -5px;
+    /* Adjust this value to position the badge */
+    background-color: red;
+    color: white;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    font-size: 12px;
+    /* Adjust font size as needed */
+}
+
+
+
+/* Style cho modal */
+.modal {
+    display: block;
+    /* Hiển thị modal */
+    position: fixed;
+    /* Vị trí cố định trên màn hình */
+    z-index: 1;
+    /* Hiển thị modal trên tất cả các phần tử khác */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Màu nền với độ mờ */
+}
+
+/* Style cho nội dung modal */
+.modal-content {
+    background-color: #fefefe;
+    margin: 7% auto;
+    /* Hiển thị modal ở giữa trang */
+    padding: 10px;
+    border: 1px solid #888;
+    width: 60%;
+    max-height: 80%;
+    /* Giới hạn chiều cao của modal */
+    overflow-y: auto;
+    /* Cho phép cuộn xuống khi nội dung vượt quá */
+}
+
+/* Style cho nút đóng modal */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+@keyframes slide-right {
+    0% {
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+    }
+
+    100% {
+        -webkit-transform: translateX(100px);
+        transform: translateX(100px);
+    }
+}
+
+.scrollbar-w-2::-webkit-scrollbar {
+    width: 0.25rem;
+    height: 0.25rem;
+}
+
+.scrollbar-track-blue-lighter::-webkit-scrollbar-track {
+    --bg-opacity: 1;
+    background-color: #f7fafc;
+    background-color: rgba(247, 250, 252, var(--bg-opacity));
+}
+
+.scrollbar-thumb-blue::-webkit-scrollbar-thumb {
+    --bg-opacity: 1;
+    background-color: #edf2f7;
+    background-color: rgba(237, 242, 247, var(--bg-opacity));
+}
+
+.scrollbar-thumb-rounded::-webkit-scrollbar-thumb {
+    border-radius: 0.25rem;
+}
