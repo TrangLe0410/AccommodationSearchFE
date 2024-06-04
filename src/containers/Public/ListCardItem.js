@@ -70,7 +70,7 @@ const ListCardItem = () => {
                         acreage={item?.attributes?.acreage}
                         createdAt={item?.createdAt}
                         image={JSON.parse(item.images.image)}
-                        id={item.id}
+                        id={item.id} // <-- Here's the id being passed
                         star={item?.star}
                         address={item?.address}
                         description={JSON.parse(item?.description)}

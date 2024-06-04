@@ -38,3 +38,29 @@ export const apiUpdateProfile = async (formData) => {
         throw error;
     }
 };
+
+export const apiGetCountUser = () => new Promise(async (resolve, reject) => {
+    try {
+        const response = await axiosConfig({
+            method: 'get',
+            url: '/api/v1/user/count-allUser',
+        })
+        resolve(response)
+
+    } catch (error) {
+        reject(error)
+    }
+})
+
+
+export const apiGetCountUserByMonth = () => new Promise(async (resolve, reject) => {
+    try {
+        const response = await axiosConfig({
+            method: 'get',
+            url: '/api/v1/user/count-by-moth',
+        });
+        resolve(response);
+    } catch (error) {
+        reject(error);
+    }
+});
