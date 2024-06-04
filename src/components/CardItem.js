@@ -11,6 +11,7 @@ const CardItem = ({ address, title, price, acreage, star, description, image, cr
     const formatTime = (createdAt) => {
         return moment(createdAt).fromNow();
     }
+
     return (
         <div class="w-[260px] bg-white border border-gray-200 rounded-lg shadow dark:text-white dark:border-white">
             <Link style={{ display: 'inline-block', overflow: 'hidden', position: 'relative' }}>

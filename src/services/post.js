@@ -281,3 +281,59 @@ export const apiVisiblePost = (postId) => new Promise(async (resolve, reject) =>
         reject(error)
     }
 })
+
+export const apiGetCountPost = () => new Promise(async (resolve, reject) => {
+    try {
+        const response = await axiosConfig({
+            method: 'get',
+            url: '/api/v1/post/count-allPost',
+        })
+        resolve(response)
+
+    } catch (error) {
+        reject(error)
+    }
+})
+
+export const apiGetCountPostByThisMoth = () => new Promise(async (resolve, reject) => {
+    try {
+        const response = await axiosConfig({
+            method: 'get',
+            url: '/api/v1/post/count-this-month',
+        })
+        resolve(response)
+
+    } catch (error) {
+        reject(error)
+    }
+})
+
+
+export const apiGetCountPostByMoth = () => new Promise(async (resolve, reject) => {
+    try {
+        const response = await axiosConfig({
+            method: 'get',
+            url: '/api/v1/post/count-post-moth',
+        })
+        resolve(response)
+
+    } catch (error) {
+        reject(error)
+    }
+})
+
+export const apiGetCountPostByProvince = () => new Promise(async (resolve, reject) => {
+    try {
+        const response = await axiosConfig({
+            method: 'get',
+            url: '/api/v1/post/count-post-by-province',
+        })
+        resolve(response)
+
+    } catch (error) {
+        reject(error)
+    }
+})
+
+
+
