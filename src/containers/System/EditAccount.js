@@ -61,13 +61,13 @@ const EditAccount = () => {
 
             // Gọi API cập nhật thông tin cá nhân với formData đã được cập nhật
             const response = await apiUpdateProfile(updatedFormData);
-            console.log('Profile updated successfully:', response.data);
+            console.log('Cập nhật thông tin thành công:', response.data);
             // Hiển thị thông báo thành công
-            Swal.fire('Success', 'Profile updated successfully', 'success');
+            Swal.fire('Thành công', 'Cập nhật thông tin thành công', 'success');
         } catch (error) {
             console.error('Failed to update profile:', error);
             // Hiển thị thông báo lỗi
-            Swal.fire('Error', 'Failed to update profile', 'error');
+            Swal.fire('Lỗi', 'Cập nhật thông tin thất bạn', 'error');
         }
     };
 

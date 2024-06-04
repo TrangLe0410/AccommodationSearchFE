@@ -120,30 +120,23 @@ const ChatSiderBar = ({ onRoomClick, selectedConversationId }) => {
     userConversations.sort((roomA, roomB) => {
         const lastMessageA = lastMessages[roomA.id];
         const lastMessageB = lastMessages[roomB.id];
+
+        // Nếu không có tin nhắn cuối cùng, sắp xếp theo thứ tự ngược lại
         if (!lastMessageA && !lastMessageB) return 0;
         if (!lastMessageA) return 1;
         if (!lastMessageB) return -1;
+
+        // So sánh thời gian của tin nhắn cuối cùng để sắp xếp
         return moment(lastMessageB.time).valueOf() - moment(lastMessageA.time).valueOf();
     });
 
 
-    useEffect(() => {
-        const fetchLastMessages = async () => {
-            try {
-                const messagesPromises = userConversations.map(chatRoom => getMessageLastedByRoom(chatRoom.id));
-                const lastMessagesData = await Promise.all(messagesPromises);
-                const lastMessagesObj = {};
-                lastMessagesData.forEach((message, index) => {
-                    lastMessagesObj[userConversations[index].id] = message;
-                });
-                setLastMessages(lastMessagesObj);
-            } catch (error) {
-                console.error("Error fetching last messages:", error);
-            }
-        };
 
-        fetchLastMessages();
-    }, [userConversations]);
+    const truncateMessage = (message) => {
+        if (typeof message !== 'string') return ''; // Kiểm tra xem message có phải là một chuỗi không
+        const maxLength = 25;
+        return message.length > maxLength ? message.substring(0, maxLength) + '...' : message;
+    };
 
     return (
         <div className="h-screen">
@@ -174,7 +167,7 @@ const ChatSiderBar = ({ onRoomClick, selectedConversationId }) => {
                                             <img src={otherUser?.avatar || 'https://hethongxephangtudong.net/public/client/images/no-avatar.png'} className='w-10 h-10 object-cover rounded-full border-2 border-emerald-400 shadow-emerald-400' alt={otherUser?.name} />
                                             <div className="flex flex-col ml-2">
                                                 <span className="font-medium text-black">{otherUser?.name}</span>
-                                                <span className="text-black">{lastMessage.message}</span>
+                                                <span className="text-black">{truncateMessage(lastMessage.message)}</span>
                                             </div>
                                         </div>
                                         <div className="flex flex-col items-center text-sm">
@@ -186,9 +179,7 @@ const ChatSiderBar = ({ onRoomClick, selectedConversationId }) => {
                                                     {unreadMessagesCountMap[chatRoom.id]}
                                                 </p>
                                             )}
-
                                         </div>
-
                                     </li>
                                 );
                             })}

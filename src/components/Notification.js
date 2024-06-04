@@ -95,7 +95,7 @@ const Notification = ({ socketRef }) => {
                                 <div key={notification?.id} href="#" className="flex items-center px-4 py-3 border-b hover:bg-gray-100 -mx-2">
                                     {userInfo && (
                                         <React.Fragment>
-                                            <img className="h-8 w-8 rounded-full object-cover mx-1  border-2 border-emerald-400 shadow-emerald-400" src={userInfo?.avatar || 'https://hethongxephangtudong.net/public/client/images/no-avatar.png'} alt="avatar" />
+                                            <img className="h-[38px] w-[38px] rounded-full object-cover mx-1  border-2 border-emerald-400 shadow-emerald-400" src={userInfo?.avatar || 'https://hethongxephangtudong.net/public/client/images/no-avatar.png'} alt="avatar" />
                                         </React.Fragment>
                                     )}
                                     <p className="text-gray-600 text-sm mx-2">

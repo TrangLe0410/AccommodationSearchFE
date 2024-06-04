@@ -32,6 +32,7 @@ const Appointment = () => {
         }
     }, [currentData?.id, dispatch]);
 
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prevState => ({
@@ -39,6 +40,7 @@ const Appointment = () => {
             [name]: value
         }));
     };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -61,30 +63,40 @@ const Appointment = () => {
         }
 
         try {
-            const response = await createNewAppointment(formData, formData.appointmentRequesterID);
-            console.log(response)
-            Swal.fire({
-                icon: 'success',
-                title: 'Lịch hẹn đã được tạo thành công',
-            });
-            dispatch(fetchAppointments(formData.appointmentRequesterID));
+            const response = await createNewAppointment(formData);
+
+            if (response.status === 201) { // Check for successful response status
+                const appointmentNew = response.data.appointmentNew; // Access appointmentNew from successful response
 
 
-            socket.emit('send_notification', {
-                userId: posts[0]?.userId,
-                content: 'Đã đặt lịch hẹn với bạn',
-                appointmentId: appointmentRequesters[0]?.id
-            });
 
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Lịch hẹn đã được tạo thành công',
+                });
 
-            setFormData({
-                name: currentPost?.user?.name || '',
-                postId: '',
-                phone: currentPost?.user?.phone || '',
-                appointmentDate: '',
-                appointmentTime: '',
-                content: ''
-            });
+                setFormData({
+                    name: currentPost?.user?.name || '',
+                    postId: '',
+                    phone: currentPost?.user?.phone || '',
+                    appointmentDate: '',
+                    appointmentTime: '',
+                    content: ''
+                });
+
+                // Access appointmentRequesters here after dispatching fetchAppointments (potentially use in socket emission)
+                socket.emit('send_notification', {
+                    userId: posts[0]?.userId,
+                    content: 'Đã đặt lịch hẹn với bạn',
+                    appointmentId: appointmentNew?.id // Consider appropriate handling based on appointmentRequesters update
+                });
+            } else {
+                console.error('API request failed:', response);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Đã xảy ra lỗi khi tạo lịch hẹn',
+                });
+            }
         } catch (error) {
             console.error('Đã xảy ra lỗi khi tạo lịch hẹn:', error);
             Swal.fire({
@@ -93,7 +105,6 @@ const Appointment = () => {
             });
         }
     };
-
     return (
         <div>
             <div className="flex items-center justify-center p-12">
