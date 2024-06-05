@@ -1,103 +1,95 @@
-import React, { memo, useEffect, useState } from 'react'
-import { Select, InputReadOnly, InputFormV2 } from '../components'
-import { apiGetPublicProvinces, apiGetPublicDistrict, apiGetPublicWards } from '../services'
-import { useSelector } from 'react-redux'
+import React, { memo, useEffect, useState } from 'react';
+import { Select, InputReadOnly, InputFormV2 } from '../components';
+import { apiGetPublicProvinces, apiGetPublicDistrict, apiGetPublicWards } from '../services';
+import { useSelector } from 'react-redux';
 
 const Address = ({ setPayload, invalidFields, setInvalidFields, isEdit }) => {
-    const { dataEdit } = useSelector(state => state.post)
-    const [provinces, setProvinces] = useState([])
-    const [districts, setDistricts] = useState([])
+    const { dataEdit } = useSelector(state => state.post);
+    const [provinces, setProvinces] = useState([]);
+    const [districts, setDistricts] = useState([]);
     const [wards, setWards] = useState([]);
-    const [province, setProvince] = useState('')
-    const [district, setDistrict] = useState('')
-    const [ward, setWard] = useState('')
-    const [reset, setReset] = useState(false)
-    const [inputAddress, setInputAddress] = useState('')
-
-
+    const [province, setProvince] = useState('');
+    const [district, setDistrict] = useState('');
+    const [ward, setWard] = useState('');
+    const [reset, setReset] = useState(false);
+    const [inputAddress, setInputAddress] = useState('');
 
     useEffect(() => {
         if (isEdit && dataEdit) {
-            let addressArr = dataEdit?.address?.split(',');
-            setInputAddress({ address: addressArr[0]?.trim() }); // Lấy phần đầu tiên của địa chỉ để hiển thị trong InputFormV2
+            const addressArr = dataEdit?.address?.split(',');
+            setInputAddress({ address: addressArr[0]?.trim() });
+
+            const provinceName = addressArr[addressArr.length - 1]?.trim();
+            const districtName = addressArr[addressArr.length - 2]?.trim();
+            const wardName = addressArr[addressArr.length - 3]?.trim();
+
+            const province = provinces.find(item => item.name === provinceName);
+            if (province) setProvince(province.idProvince);
+
+            const district = districts.find(item => item.name === districtName);
+            if (district) setDistrict(district.idDistrict);
+
+            const ward = wards.find(item => item.name === wardName);
+            if (ward) setWard(ward.idCommune);
         }
-    }, [dataEdit, isEdit]);
+    }, [dataEdit, isEdit, provinces, districts, wards]);
 
     useEffect(() => {
-        if (provinces.length > 0) {
-            const daNangProvince = provinces.find(item => item.province_name === 'Thành phố Đà Nẵng');
-            if (daNangProvince) {
-                setProvince(daNangProvince.province_id);
-            }
-        }
-    }, [provinces]);
-
-    useEffect(() => {
-        if (isEdit && dataEdit) {
-            let addressArr = dataEdit?.address?.split(',');
-            let foundDistrict = districts?.length > 0 && districts?.find(item => item.district_name === addressArr[addressArr.length - 2]?.trim());
-            setDistrict(foundDistrict ? foundDistrict.district_id : '');
-        }
-    }, [districts, dataEdit, isEdit]);
-
-    useEffect(() => {
-        if (isEdit && dataEdit) {
-            let addressArr = dataEdit?.address?.split(',');
-            let foundWard = wards?.length > 0 && wards?.find(item => item.ward_name === addressArr[addressArr.length - 3]?.trim());
-            setWard(foundWard ? foundWard.ward_id : '');
-        }
-    }, [wards, dataEdit, isEdit]);
-
-    useEffect(() => {
-        const fetchPublicProvince = async () => {
-            const response = await apiGetPublicProvinces();
-            if (response.status === 200) {
-                setProvinces(response?.data.results);
-
-                // Tìm tỉnh/thành phố Đà Nẵng và đặt nó làm giá trị mặc định cho province
-                const daNangProvince = response?.data.results.find(item => item.province_name === 'Thành phố Đà Nẵng');
-                if (daNangProvince) {
-                    setProvince(daNangProvince.province_id);
+        const fetchProvinces = async () => {
+            try {
+                const response = await apiGetPublicProvinces();
+                if (response) {
+                    setProvinces(response);
+                    const defaultProvince = response.find(item => item.name === 'Thành phố Đà Nẵng');
+                    if (defaultProvince) setProvince(defaultProvince.idProvince);
                 }
+            } catch (error) {
+                console.error("Error fetching provinces:", error);
             }
-        }
-        fetchPublicProvince();
+        };
+        fetchProvinces();
     }, []);
 
     useEffect(() => {
-        setDistrict('')
-        const fetchPublicDistrict = async () => {
-            const response = await apiGetPublicDistrict(province)
-            if (response.status === 200) {
-                setDistricts(response.data?.results)
-            }
-        }
-        province && fetchPublicDistrict()
-        !province ? setReset(true) : setReset(false)
-        !province && setDistricts([])
-    }, [province])
-    useEffect(() => {
-        setWards([]); // Xóa danh sách phường/xã hiện tại
-        const fetchPublicWard = async () => {
+        const fetchDistricts = async () => {
             try {
-                const response = await apiGetPublicWards(district); // Gọi API để lấy danh sách phường/xã
-                setWards(response); // Cập nhật danh sách phường/xã
+                const response = await apiGetPublicDistrict(province);
+                if (response) {
+                    setDistricts(response);
+                }
+            } catch (error) {
+                console.error("Error fetching districts:", error);
+            }
+        };
+        if (province) fetchDistricts();
+        else {
+            setReset(true);
+            setDistricts([]);
+        }
+    }, [province]);
+
+    useEffect(() => {
+        const fetchWards = async () => {
+            try {
+                const response = await apiGetPublicWards(district);
+                if (response) {
+                    setWards(response);
+                }
             } catch (error) {
                 console.error("Error fetching wards:", error);
             }
         };
-        district && fetchPublicWard(); // Gọi fetchPublicWard() khi district thay đổi
-        !district && setWards([]); // Nếu không có district được chọn, đặt danh sách phường/xã về trạng thái ban đầu
+        if (district) fetchWards();
+        else setWards([]);
     }, [district]);
-
 
     useEffect(() => {
         setPayload(prev => ({
             ...prev,
-            address: `${inputAddress.address}, ${wards?.find(item => item.ward_id === ward)?.ward_name}, ${districts?.find(item => item.district_id === district)?.district_name}, ${provinces?.find(item => item.province_id === province)?.province_name}`,
-            province: provinces?.find(item => item.province_id === province)?.province_name
-        }))
-    }, [inputAddress, province, district, provinces, districts, ward, wards, setPayload])
+            address: `${inputAddress.address ? inputAddress.address + ', ' : ''}${wards.find(item => item.idCommune === ward)?.name || ''}, ${districts.find(item => item.idDistrict === district)?.name || ''}, ${provinces.find(item => item.idProvince === province)?.name || ''}`,
+            province: provinces.find(item => item.idProvince === province)?.name
+        }));
+    }, [inputAddress, province, district, provinces, districts, ward, wards, setPayload]);
 
     return (
         <div>
@@ -121,7 +113,8 @@ const Address = ({ setPayload, invalidFields, setInvalidFields, isEdit }) => {
                         value={district}
                         setValue={setDistrict}
                         options={districts}
-                        label='Quận/Huyện' />
+                        label='Quận/Huyện'
+                    />
                     <Select
                         invalidFields={invalidFields}
                         setInvalidFields={setInvalidFields}
@@ -130,22 +123,23 @@ const Address = ({ setPayload, invalidFields, setInvalidFields, isEdit }) => {
                         value={ward}
                         setValue={setWard}
                         options={wards}
-                        label='Phường/Xã' />
+                        label='Phường/Xã'
+                    />
                 </div>
                 <InputFormV2
                     setValue={setInputAddress}
                     name='address'
                     label='Địa chỉ nhà'
                     invalidFields={invalidFields}
-                    setInvalidFields={setInvalidFields} />
+                    setInvalidFields={setInvalidFields}
+                />
                 <InputReadOnly
                     label='Địa chỉ chính xác'
-                    value={`${inputAddress.address ? inputAddress.address + ', ' : ''}${wards?.find(item => item.ward_id === ward)?.ward_name || ''}${ward ? ', ' : ''}${districts?.find(item => item.district_id === district)?.district_name || ''}${district ? ', ' : ''}${provinces?.find(item => item.province_id === province)?.province_name || ''}`}
+                    value={`${inputAddress.address ? inputAddress.address + ', ' : ''}${wards.find(item => item.idCommune === ward)?.name || ''}${ward ? ', ' : ''}${districts.find(item => item.idDistrict === district)?.name || ''}${district ? ', ' : ''}${provinces.find(item => item.idProvince === province)?.name || ''}`}
                 />
-
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default memo(Address)
+export default memo(Address);

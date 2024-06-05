@@ -37,34 +37,35 @@ export const apiGetProvinces = () => new Promise(async (resolve, reject) => {
 
 export const apiGetPublicProvinces = () => new Promise(async (resolve, reject) => {
     try {
-        const response = await axiosDefault({
+        const response = await axios({
             method: 'get',
-            url: 'https://vapi.vnappmob.com/api/province/'
+            url: '/api/v1/province/provinces'
         })
-        resolve(response)
+        resolve(response.data)
     } catch (error) {
         reject(error)
     }
 })
 export const apiGetPublicDistrict = (provinceId) => new Promise(async (resolve, reject) => {
     try {
-        const response = await axiosDefault({
+        const response = await axios({
             method: 'get',
-            url: `https://vapi.vnappmob.com/api/province/district/${provinceId}`
-        })
-        resolve(response)
+            url: `/api/v1/province/districts/${provinceId}`
+        });
+        resolve(response.data);
     } catch (error) {
-        reject(error)
+        reject(error);
     }
 })
-export const apiGetPublicWards = async (districtId) => {
+
+export const apiGetPublicWards = (districtId) => new Promise(async (resolve, reject) => {
     try {
-        const response = await axiosDefault({
+        const response = await axios({
             method: 'get',
-            url: `https://vapi.vnappmob.com/api/province/ward/${districtId}`
+            url: `/api/v1/province/communes/${districtId}`
         });
-        return response.data.results;
+        resolve(response.data);
     } catch (error) {
-        throw error;
+        reject(error);
     }
-};
+})
