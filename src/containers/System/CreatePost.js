@@ -94,7 +94,7 @@ const CreatePost = ({ isEdit }) => {
             // description: JSON.stringify(payload.description)
             description: descriptionArray
         }
-        console.log(finalPayload)
+
 
         const result = validate(finalPayload, setInvalidFields)
         if (result === 0) {
@@ -103,7 +103,6 @@ const CreatePost = ({ isEdit }) => {
                 finalPayload.attributesId = dataEdit?.attributesId
                 finalPayload.imagesId = dataEdit?.imagesId
                 finalPayload.overviewId = dataEdit?.overviewId
-                console.log(finalPayload)
                 const response = await apiUpdatePost(finalPayload)
                 if (response?.data.err === 0) {
                     Swal.fire('Thành công', 'Cập nhật bài đăng thành công', 'success').then(() => {
