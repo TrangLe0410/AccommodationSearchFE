@@ -59,6 +59,22 @@ export const apiUploadImages = (images) => new Promise(async (resolve, reject) =
     }
 })
 
+export const apiUploadVideo = (video) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios({
+                method: 'post',
+                url: `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/video/upload`,
+                data: video,
+            });
+            resolve(response);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+
 export const apiCreatePost = (payload) => new Promise(async (resolve, reject) => {
     try {
         const response = await axiosConfig({

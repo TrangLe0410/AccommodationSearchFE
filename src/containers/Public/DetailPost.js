@@ -113,7 +113,6 @@ const DetailPost = () => {
         setShowChat(false);
     };
 
-    console.log(posts[0]?.user)
 
 
 
@@ -121,7 +120,10 @@ const DetailPost = () => {
         <div className='w-full'>
             <div className='w-full flex gap-4'>
                 <div className='w-[70%] border bg-white border-gray-300 rounded-lg p-4' >
-                    <SliderPost images={posts && posts.length > 0 && JSON.parse(posts[0]?.images?.image)} />
+                    <SliderPost
+                        images={posts && posts.length > 0 && JSON.parse(posts[0]?.images?.image)}
+                        video={posts && posts.length > 0 && posts[0]?.video}
+                    />
                     <div className='flex flex-col gap-3 mt-5'>
                         <h2 className='text-2xl font-bold text-[#0E2E50]'>
                             {handleStar(+posts[0]?.star).map((star, number) => (
