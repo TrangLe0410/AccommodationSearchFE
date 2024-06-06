@@ -293,6 +293,17 @@ const CreatePost = ({ isEdit }) => {
                 <div className='w-[35%] flex-none pt-10 '>
                     {/* <Map address={payload.address} /> */}
                     <MapBox address={payload.address} />
+                    <div className='border mt-8 p-3 text-justify border-gray-300 bg-[#ffeeba] text-[#856404] rounded-md'>
+                        <p className='font-semibold text-lg'>Lưu ý khi đăng tin</p>
+                        <ul className='list-disc pl-5'>
+                            <li>Nội dung phải viết bằng tiếng Việt có dấu</li>
+                            <li>Tiêu đề tin không dài quá 100 kí tự</li>
+                            <li>Các bạn nên điền đầy đủ thông tin vào các mục để tin đăng có hiệu quả hơn.</li>
+                            <li>Để tăng độ tin cậy và tin rao được nhiều người quan tâm hơn, hãy sửa vị trí tin rao của bạn trên bản đồ bằng cách kéo icon tới đúng vị trí của tin rao.</li>
+                            <li>Tin đăng có hình ảnh rõ ràng sẽ được xem và gọi gấp nhiều lần so với tin rao không có ảnh. Hãy đăng ảnh để được giao dịch nhanh chóng!</li>
+                        </ul>
+                    </div>
+
                 </div>
             </div>
         </div>

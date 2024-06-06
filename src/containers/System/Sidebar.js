@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
-import { useLocation, NavLink } from 'react-router-dom'
+import { useLocation, NavLink, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import icons from '../../ultils/icons'
 import anonAvatar from '../../assets/anon-avatar.png'
 import * as actions from '../../store/actions'
 import menuSidebar from '../../ultils/menuSidebar'
-
+import { CiMoneyBill } from "react-icons/ci";
 const { IoExitOutline } = icons
 
 const activeStyle = 'hover:bg-gray-200 flex rounded-md items-center gap-4 py-2 font-bold bg-gray-200'
@@ -29,6 +29,12 @@ const Sidebar = () => {
     const isActive = (path) => {
         return location.pathname === path;
     }
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate('/he-thong/nap-tien');
+    };
+
 
 
 
@@ -45,6 +51,19 @@ const Sidebar = () => {
                     </div>
                 </div>
                 <span>Mã thành viên: <small className='font-medium'>{currentData?.id?.match(/\d/g).join('')?.slice(0, 6)}</small></span>
+                <div className='flex items-center gap-4'>
+                    <div className='flex gap-1 items-center'>
+                        <p >Số dư: </p>
+                        <p className='font-bold text-green-600'>{currentData?.balance}đ</p>
+                    </div>
+                    <button
+                        className='w-[70px] mt-[-10px] rounded-sm text-center items-center border border-yellow-500 bg-yellow-400'
+                        onClick={handleClick}
+                    >
+                        <p>Nạp tiền</p>
+                    </button>
+                </div>
+
             </div>
             <div>
                 {menuSidebar.map(item => (
