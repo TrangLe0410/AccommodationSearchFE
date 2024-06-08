@@ -161,10 +161,6 @@ const ManagePost = () => {
     }
 
 
-
-
-
-
     return (
         <div className='flex flex-col gap-6'>
             <div className='py-4 border-b border-gray-200 flex items-center justify-between'>
@@ -174,6 +170,7 @@ const ManagePost = () => {
                     <option value="1">Tin đã ẩn</option>
                     <option value="2">Tin đang hiển thị</option>
                 </select>
+
 
             </div>
             <table className='w-full table-auto'>
@@ -225,13 +222,13 @@ const ManagePost = () => {
                                     {/* <td className='border px-2  h-full text-center '> {item?.overviews?.created}</td>
                                     <td className='border px-2  h-full text-center '> {item?.overviews?.expired}</td> */}
                                     <td className='border px-2 w-[10%] h-full text-center flex justify-center items-center'>
-                                        {item.status === 'Pending' && item.visibility === 'Visible' && (
+                                        {item.status === 'Pending' && item?.visibility === 'Visible' && (
                                             <span className='   text-yellow-500 '>Tin đang chờ xét duyệt</span>
                                         )}
-                                        {item.status === 'Approved' && item.visibility === 'Visible' && (
+                                        {item.status === 'Approved' && item?.visibility === 'Visible' && (
                                             <span className='text-green-500'>Tin đang hiển thị</span>
                                         )}
-                                        {item.visibility === 'Hidden' && item.status === 'Approved' && (
+                                        {item?.visibility === 'Hidden' && item?.status === 'Approved' && (
                                             <span className='text-red-500'>Tin đã ẩn</span>
                                         )}
                                     </td>

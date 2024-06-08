@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { fetchUserNotifications } from '../services/notification';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAppointments, fetchAppointmentsPoster, getAllUser } from '../store/actions';
@@ -8,9 +8,11 @@ const Notification = ({ socketRef }) => {
     const dispatch = useDispatch();
     const [notifications, setNotifications] = useState([]);
     const [posterInfo, setPosterInfo] = useState(null);
+    const [showAll, setShowAll] = useState(false);
     const { appointmentRequesters, appointmentsPosters } = useSelector(state => state.appointments);
     const { currentData, users } = useSelector(state => state.user);
 
+    const notificationListRef = useRef(null);
 
     useEffect(() => {
         dispatch(getAllUser());
@@ -34,6 +36,7 @@ const Notification = ({ socketRef }) => {
             dispatch(fetchAppointments(appointmentRequesterID));
         }
     }, [currentData?.id, dispatch]);
+
     useEffect(() => {
         const posterId = currentData?.id;
         if (posterId) {
@@ -43,13 +46,13 @@ const Notification = ({ socketRef }) => {
 
     useEffect(() => {
         if (notifications.length > 0 && users.length > 0) {
-            setPosterInfo(null); // Reset posterInfo
+            setPosterInfo(null);
             notifications.forEach(notification => {
                 const appointment = findAppointment(notification?.appointmentId);
                 if (appointment) {
                     const posterId = appointment?.posterId;
                     const poster = findUserById(posterId);
-                    setPosterInfo(poster); // Set posterInfo to the found poster
+                    setPosterInfo(poster);
                 }
             });
         }
@@ -65,9 +68,8 @@ const Notification = ({ socketRef }) => {
     };
 
     useEffect(() => {
-        // Lắng nghe sự kiện socket để cập nhật trạng thái của thông báo
         socketRef.current.on('notifications_marked_as_read', (data) => {
-            // Kiểm tra nếu thông báo được đánh dấu là đã đọc, cập nhật trạng thái của nó trong state hoặc thực hiện các thao tác khác nếu cần
+            // Handle the event
         });
 
         return () => {
@@ -75,28 +77,33 @@ const Notification = ({ socketRef }) => {
         };
     }, []);
 
+    const handleToggleShowAll = () => {
+        setShowAll(!showAll);
+        // Scroll to the bottom when showing all notifications
+        if (!showAll && notificationListRef.current) {
+            notificationListRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
 
+    const displayedNotifications = showAll ? notifications : notifications.slice(0, 5);
 
-
+    const listHeight = notifications.length > 5 ? 'h-[450px]' : 'h-auto';
 
     return (
-        <div className='absolute right-0'>
+        <div className='w-full absolute right-0'>
             <div className="absolute right-0 mt-11 bg-white border border-gray-300 rounded-md shadow-lg overflow-hidden z-20 w-[20rem]">
-                <div className="py-2">
-                    {notifications.length > 0 ? (
-                        notifications.map(notification => {
+                <div className={`py-2 ${listHeight} overflow-auto`} style={{ overflowX: 'hidden' }} ref={notificationListRef}>
+                    {displayedNotifications.length > 0 ? (
+                        displayedNotifications.map(notification => {
                             const appointment = findAppointment(notification?.appointmentId);
                             const isRequesterNotification = currentData?.id === appointment?.appointmentRequesterID;
                             const isPosterNotification = currentData?.id === appointment?.posterId;
-
                             const userInfo = isRequesterNotification ? findUserById(appointment?.posterId) : isPosterNotification ? findUserById(appointment?.appointmentRequesterID) : null;
 
                             return (
-                                <div key={notification?.id} href="#" className="flex items-center px-4 py-3 border-b hover:bg-gray-100 -mx-2">
+                                <div key={notification?.id} className="flex items-center px-4 py-3 border-b hover:bg-gray-100 -mx-2">
                                     {userInfo && (
-                                        <React.Fragment>
-                                            <img className="h-[38px] w-[38px] rounded-full object-cover mx-1  border-2 border-emerald-400 shadow-emerald-400" src={userInfo?.avatar || 'https://hethongxephangtudong.net/public/client/images/no-avatar.png'} alt="avatar" />
-                                        </React.Fragment>
+                                        <img className="h-[38px] w-[38px] rounded-full object-cover mx-1 border-2 border-emerald-400 shadow-emerald-400" src={userInfo?.avatar || 'https://hethongxephangtudong.net/public/client/images/no-avatar.png'} alt="avatar" />
                                     )}
                                     <p className="text-gray-600 text-sm mx-2">
                                         <span>Thông báo từ</span>
@@ -114,6 +121,15 @@ const Notification = ({ socketRef }) => {
                         <p className="text-gray-600 text-sm mx-2">Không có thông báo nào</p>
                     )}
                 </div>
+                {notifications.length > 5 && (
+                    <button
+                        type='button'
+                        className='w-full border border-[#0E2E50] outline-none py-2 px-4 rounded-md bg-[#0E2E50] text-base flex items-center justify-center gap-2 text-white font-medium hover:shadow-lg'
+                        onClick={handleToggleShowAll}
+                    >
+                        {showAll ? 'Ẩn bớt' : 'Xem tất cả thông báo'}
+                    </button>
+                )}
             </div>
         </div>
     );
