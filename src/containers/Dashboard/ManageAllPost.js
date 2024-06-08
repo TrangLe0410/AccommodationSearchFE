@@ -8,7 +8,8 @@ import { path } from '../../ultils/constant';
 import moment from 'moment';
 import Pagination from './Pagination'; // Import Pagination component
 import icons from '../../ultils/icons';
-const { IoMdCheckmarkCircle, MdCancel } = icons;
+import { FaSearch } from "react-icons/fa";
+const { IoMdCheckmarkCircle, MdCancel, FiSearch } = icons;
 
 const ManageAllPost = () => {
     const dispatch = useDispatch();
@@ -17,8 +18,9 @@ const ManageAllPost = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = 5;
     const [status, setStatus] = useState('0');
+    const [visibility, setVisibility] = useState('0');
     const [filteredPosts, setFilteredPosts] = useState([]);
-
+    const [searchKeyword, setSearchKeyword] = useState('');
     useEffect(() => {
         dispatch(actions.getPosts()); // Fetch posts when component mounts
 
@@ -29,20 +31,19 @@ const ManageAllPost = () => {
 
     useEffect(() => {
         setCurrentPage(1); // Reset current page when status changes
-    }, [status]);
+    }, [visibility]);
 
     useEffect(() => {
-        filterPostsByStatus();
-    }, [status, allPosts, currentPage]);
+        filterPosts();
+    }, [searchKeyword, visibility, allPosts, currentPage]);
 
-    const filterPostsByStatus = () => {
-        let filteredPosts = [];
-        if (status === '1') {
-            filteredPosts = allPosts.filter(item => checkStatus(item?.overviews?.expired?.split(' ')[3]));
-        } else if (status === '2') {
-            filteredPosts = allPosts.filter(item => !checkStatus(item?.overviews?.expired?.split(' ')[3]));
-        } else {
-            filteredPosts = allPosts;
+    const filterPosts = () => {
+        let filteredPosts = allPosts;
+        if (visibility !== '0') {
+            filteredPosts = filteredPosts.filter(item => item.visibility === visibility);
+        }
+        if (searchKeyword.trim() !== '') {
+            filteredPosts = filteredPosts.filter(item => item.title.toLowerCase().includes(searchKeyword.toLowerCase()));
         }
         setFilteredPosts(filteredPosts);
     };
@@ -103,11 +104,28 @@ const ManageAllPost = () => {
         <div className='flex flex-col gap-6'>
             <div className='py-4 border-b border-gray-200 flex items-center justify-between'>
                 <h1 className='text-3xl font-medium '>Bài đăng trong hệ thống</h1>
-                <select onChange={e => setStatus(e.target.value)} value={status} className='outline-none border p-2 border-gray-200 rounded-md'>
-                    <option value="0">Lọc theo trạng thái</option>
-                    <option value="1">Đang hoạt động</option>
-                    <option value="2">Đã hết hạn</option>
-                </select>
+                <div className="flex items-center">
+                    <select onChange={e => setVisibility(e.target.value)} value={visibility} className='outline-none border p-2 border-gray-200 rounded-md mr-4'>
+                        <option value="0">Lọc theo hiển thị</option>
+                        <option value="Visible">Tin hiển thị</option>
+                        <option value="Hidden">Tin đang ẩn</option>
+                    </select>
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder="Tìm kiếm..."
+                            value={searchKeyword}
+                            onChange={e => setSearchKeyword(e.target.value)}
+                            className="outline-none border p-2 border-gray-200 rounded-md pl-8" // Thêm class để tạo khoảng cách cho icon
+                        />
+
+                        {/* Icon FiSearch */}
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <FiSearch color='gray-200' /> {/* Sử dụng icon FiSearch */}
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             {allPosts.length > 0 ? (
@@ -137,10 +155,14 @@ const ManageAllPost = () => {
                                         </Link>
                                     </td>
                                     <td className='border px-2 flex-1 h-full text-center flex items-center justify-center '> {item?.attributes?.price}</td>
-                                    <td className='border px-2 flex-1 h-full text-center flex items-center justify-center'>
-                                        <span className={moment(item?.overviews?.expired?.split(' ')[3], process.env.REACT_APP_FORMAT_DATE).isAfter(new Date().toDateString()) ? 'text-green-500' : 'text-red-500'}>
-                                            {moment(item?.overviews?.expired?.split(' ')[3], process.env.REACT_APP_FORMAT_DATE).isAfter(new Date().toDateString()) ? 'Đang hoạt động' : 'Đã hết hạn'}
-                                        </span>
+                                    <td className='border px-2 flex-1 h-full text-center flex justify-center items-center'>
+
+                                        {item?.visibility === 'Visible' && (
+                                            <span className='text-green-500'>Tin đang hiển thị</span>
+                                        )}
+                                        {item?.visibility === 'Hidden' && (
+                                            <span className='text-red-500'>Tin đã ẩn</span>
+                                        )}
                                     </td>
                                     <td className='border px-2 flex-1 h-full text-center flex items-center justify-center'>
                                         {item.status === 'Pending' ? (

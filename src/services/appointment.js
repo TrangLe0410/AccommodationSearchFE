@@ -9,8 +9,8 @@ export const createNewAppointment = (formData) => new Promise(async (resolve, re
             data: formData
         });
 
-        const appointmentId = response.data.appointmentId; // Lấy id của lịch hẹn từ dữ liệu phản hồi
-        resolve(appointmentId); // Trả về id của lịch hẹn
+
+        resolve(response);
 
     } catch (error) {
         reject(error);

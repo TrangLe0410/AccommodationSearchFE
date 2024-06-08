@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Overview, Address, Loading, Button, Map } from '../../components'
-import { apiUpdatePost, apiUploadImages } from '../../services'
+import { apiUpdatePost, apiUploadImages, apiUploadVideo } from '../../services'
 import icons from '../../ultils/icons'
 import { getCodes, getCodesArea } from '../../ultils/Common/getCodes'
 import { useDispatch, useSelector } from 'react-redux'
@@ -11,6 +11,7 @@ import { UseDispatch } from 'react-redux'
 import { resetDataEdit } from '../../store/actions'
 import { useNavigate } from 'react-router-dom';
 import MapBox from '../../components/MapBox'
+import { FaVideo } from "react-icons/fa";
 const { BsCameraFill, ImBin } = icons
 
 const CreatePost = ({ isEdit }) => {
@@ -19,7 +20,7 @@ const CreatePost = ({ isEdit }) => {
     const dispatch = useDispatch()
 
     const { dataEdit } = useSelector(state => state.post)
-    console.log(dataEdit)
+    console.log(dataEdit?.video)
 
 
     const [payload, setPayload] = useState(() => {
@@ -34,7 +35,8 @@ const CreatePost = ({ isEdit }) => {
             areaCode: dataEdit?.areaCode || '',
             description: dataEdit?.description ? JSON.parse(dataEdit?.description) : '',
             target: dataEdit?.overviews?.target || '',
-            province: dataEdit?.province || ''
+            province: dataEdit?.province || '',
+            video: dataEdit?.video || '',
         }
         return initData
     })
@@ -44,6 +46,13 @@ const CreatePost = ({ isEdit }) => {
     const { prices, areas, categories, provinces } = useSelector(state => state.app)
     const { currentData } = useSelector(state => state.user)
     const [invalidFields, setInvalidFields] = useState([])
+    const [videoPreview, setVideoPreview] = useState(null);
+
+    useEffect(() => {
+        if (dataEdit) {
+            setVideoPreview(dataEdit?.video);
+        }
+    }, [dataEdit]);
 
     useEffect(() => {
         if (dataEdit) {
@@ -51,6 +60,8 @@ const CreatePost = ({ isEdit }) => {
             images && setImagesPreview(images)
         }
     }, [dataEdit])
+
+
     const handleFiles = async (e) => {
         e.stopPropagation()
         setIsLoading(true)
@@ -74,6 +85,11 @@ const CreatePost = ({ isEdit }) => {
             images: prev.images?.filter(item => item !== image)
         }))
     }
+
+    const handleDeleteVideo = () => {
+        setVideoPreview(null);
+        setPayload(prev => ({ ...prev, video: '' }));
+    };
     const handleSubmit = async () => {
         const descriptionArray = Array.isArray(payload.description) ? payload.description : payload.description.split('\n').filter(item => item.trim() !== "")
 
@@ -92,9 +108,12 @@ const CreatePost = ({ isEdit }) => {
             target: payload.target || 'Tất cả',
             label: `${categories?.find(item => item.code === payload?.categoryCode)?.value} ${payload?.address?.split(',')[2]}`,
             // description: JSON.stringify(payload.description)
-            description: descriptionArray
+            description: descriptionArray,
+            video: videoPreview,
+
         }
-        console.log(finalPayload)
+
+
 
         const result = validate(finalPayload, setInvalidFields)
         if (result === 0) {
@@ -103,7 +122,6 @@ const CreatePost = ({ isEdit }) => {
                 finalPayload.attributesId = dataEdit?.attributesId
                 finalPayload.imagesId = dataEdit?.imagesId
                 finalPayload.overviewId = dataEdit?.overviewId
-                console.log(finalPayload)
                 const response = await apiUpdatePost(finalPayload)
                 if (response?.data.err === 0) {
                     Swal.fire('Thành công', 'Cập nhật bài đăng thành công', 'success').then(() => {
@@ -143,7 +161,8 @@ const CreatePost = ({ isEdit }) => {
             areaCode: '',
             description: [],
             target: '',
-            province: ''
+            province: '',
+            video: '',
         });
         setImagesPreview([]);
     }
@@ -152,6 +171,36 @@ const CreatePost = ({ isEdit }) => {
             resetPayload();
         }
     }, [isEdit]);
+
+    const [isVideoUploading, setIsVideoUploading] = useState(false);
+
+    const handleVideoUpload = async (e) => {
+        e.stopPropagation();
+        setIsVideoUploading(true); // Bắt đầu hiển thị biểu tượng loading chỉ ở phần video
+        let video = e.target.files[0];
+        let formData = new FormData();
+        formData.append('file', video);
+        formData.append('upload_preset', process.env.REACT_APP_UPLOAD_ASSETS_NAME);
+
+        try {
+            const response = await apiUploadVideo(formData);
+            if (response.status === 200) {
+                const videoUrl = response.data.secure_url;
+                setPayload(prev => ({ ...prev, videoUrl }));
+                setVideoPreview(videoUrl);
+            } else {
+                // Xử lý lỗi nếu upload không thành công
+                console.error("Error uploading video");
+            }
+        } catch (error) {
+            // Xử lý lỗi nếu có lỗi trong quá trình upload
+            console.error("Error uploading video:", error);
+        }
+
+        setIsVideoUploading(false); // Kết thúc hiển thị biểu tượng loading chỉ ở phần video
+    };
+
+
 
     return (
         <div className='px-6'>
@@ -197,6 +246,40 @@ const CreatePost = ({ isEdit }) => {
                             </div>
                         </div>
                     </div>
+                    <div className='w-full mb-6'>
+                        <h2 className='font-semibold text-xl py-4'>Video</h2>
+                        <small>Cập nhật video rõ ràng sẽ cho thuê nhanh hơn</small>
+                        <div className='w-full'>
+                            <label className='w-full border-2 h-[200px] my-4 gap-4 flex flex-col items-center justify-center border-gray-400 border-dashed rounded-md' htmlFor="video">
+                                {isVideoUploading
+                                    ? <Loading />
+                                    : <div className='flex flex-col items-center justify-center'>
+                                        <FaVideo color='blue' size={50} />
+                                        Thêm video
+                                    </div>}
+                            </label>
+                            <input onChange={handleVideoUpload} hidden type="file" id='video' accept="video/*" />
+
+                            <div className='w-full'>
+                                <h3 className='font-medium py-4'>Video đã chọn</h3>
+                                {videoPreview && (
+                                    <div className='relative w-3/5 h-4/5 '>
+                                        <video controls className='w-full h-full object-cover rounded-md'>
+                                            <source src={videoPreview} type="video/mp4" />
+                                        </video>
+                                        <span
+                                            title='Xóa'
+                                            onClick={handleDeleteVideo}
+                                            className='absolute top-0 right-0 p-2 cursor-pointer bg-gray-300 hover:bg-gray-400 rounded-full'
+                                        >
+                                            <ImBin />
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
                     <Button
                         onClick={handleSubmit}
                         text={isEdit ? 'Cập nhật' : 'Tạo mới'}
@@ -210,6 +293,17 @@ const CreatePost = ({ isEdit }) => {
                 <div className='w-[35%] flex-none pt-10 '>
                     {/* <Map address={payload.address} /> */}
                     <MapBox address={payload.address} />
+                    <div className='border mt-8 p-3 text-justify border-gray-300 bg-[#ffeeba] text-[#856404] rounded-md'>
+                        <p className='font-semibold text-lg'>Lưu ý khi đăng tin</p>
+                        <ul className='list-disc pl-5'>
+                            <li>Nội dung phải viết bằng tiếng Việt có dấu</li>
+                            <li>Tiêu đề tin không dài quá 100 kí tự</li>
+                            <li>Các bạn nên điền đầy đủ thông tin vào các mục để tin đăng có hiệu quả hơn.</li>
+                            <li>Để tăng độ tin cậy và tin rao được nhiều người quan tâm hơn, hãy sửa vị trí tin rao của bạn trên bản đồ bằng cách kéo icon tới đúng vị trí của tin rao.</li>
+                            <li>Tin đăng có hình ảnh rõ ràng sẽ được xem và gọi gấp nhiều lần so với tin rao không có ảnh. Hãy đăng ảnh để được giao dịch nhanh chóng!</li>
+                        </ul>
+                    </div>
+
                 </div>
             </div>
         </div>

@@ -1,6 +1,30 @@
 import actionTypes from './actionTypes'
-import { apiConfirmAppointment, getAppointmentsByPoster, getAppointmentsByRequesterID, getAppointmentById, apiGetAppointmentById, apiApproveAppointment, apiCancelAppointment } from '../../services/appointment'
+import { apiConfirmAppointment, getAppointmentsByPoster, getAppointmentsByRequesterID, getAppointmentById, apiGetAppointmentById, apiApproveAppointment, apiCancelAppointment, createNewAppointment } from '../../services/appointment'
 
+
+export const getNewAppointment = () => async (dispatch) => {
+    try {
+        const response = await createNewAppointment()
+        if (response?.data.err === 0) {
+            dispatch({
+                type: actionTypes.GET_NEW_APPOINTMENT,
+                appointmentNew: response.data.response,
+            })
+        } else {
+            dispatch({
+                type: actionTypes.GET_NEW_APPOINTMENT,
+                msg: response.data.msg,
+                appointmentNew: null
+            })
+        }
+
+    } catch (error) {
+        dispatch({
+            type: actionTypes.GET_NEW_APPOINTMENT,
+            newPosts: null
+        })
+    }
+}
 export const fetchAppointments = (appointmentRequesterID) => {
     return async (dispatch) => {
         dispatch({ type: actionTypes.FETCH_APPOINTMENTS_REQUEST });

@@ -145,19 +145,19 @@ const Comment = () => {
                     {comments.map((comment, index) => (
                         <div key={index} className="flex items-start w-full border rounded-md">
                             <div className="p-3 flex gap-6 flex-1">
-                                <img src={comment.user.avatar || 'https://hethongxephangtudong.net/public/client/images/no-avatar.png'} alt="avatar" className="object-cover w-10 h-10 rounded-full border-2 border-emerald-400 shadow-emerald-400" />
+                                <img src={comment?.user?.avatar || 'https://hethongxephangtudong.net/public/client/images/no-avatar.png'} alt="avatar" className="object-cover w-10 h-10 rounded-full border-2 border-emerald-400 shadow-emerald-400" />
                                 <div className="flex flex-col justify-between">
                                     <h3>
-                                        <p className="font-bold">{comment.user.name}</p>
+                                        <p className="font-bold">{comment?.user?.name}</p>
                                         <p className='text-[12px]'>{format(new Date(comment.createdAt), 'dd/MM/yyyy')}</p>
                                     </h3>
                                     <p className='flex gap-1 mt-3 mb-2'>
-                                        {handleStar(comment.rate).map((star, number) => (
+                                        {handleStar(comment?.rate).map((star, number) => (
                                             <FaStar key={number} className="star-item" style={{ color: '#fbbf24' }} size={23} />
                                         ))}
                                     </p>
                                     <p className="text-gray-600 mt-2">
-                                        {comment.content}
+                                        {comment?.content}
                                     </p>
                                 </div>
                             </div>

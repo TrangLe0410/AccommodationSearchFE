@@ -1,5 +1,6 @@
 import React, { memo } from 'react'
 import Slider from 'react-slick';
+
 const settings = {
     dots: false,
     infinite: true,
@@ -7,13 +8,14 @@ const settings = {
     slidesToShow: 1,
     slidesToScroll: 1
 };
-const SliderPost = ({ images }) => {
+
+const SliderPost = ({ images, video }) => {
     return (
         <div className='w-full'>
             <Slider {...settings}>
                 {images?.length > 0 && images?.map((item, index) => {
                     return (
-                        <div className='bg-black flex justify-center h-[320px] px-12'>
+                        <div key={index} className='bg-black flex justify-center h-[320px] px-12'>
                             <img
                                 src={item}
                                 alt="slider"
@@ -21,8 +23,13 @@ const SliderPost = ({ images }) => {
                         </div>
                     )
                 })}
-
-
+                {video && (
+                    <div className='bg-black flex justify-center h-[320px] px-12'>
+                        <video controls className='object-contain m-auto h-full'>
+                            <source src={video} type="video/mp4" />
+                        </video>
+                    </div>
+                )}
             </Slider>
         </div>
     )

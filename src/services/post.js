@@ -59,6 +59,22 @@ export const apiUploadImages = (images) => new Promise(async (resolve, reject) =
     }
 })
 
+export const apiUploadVideo = (video) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios({
+                method: 'post',
+                url: `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/video/upload`,
+                data: video,
+            });
+            resolve(response);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+
 export const apiCreatePost = (payload) => new Promise(async (resolve, reject) => {
     try {
         const response = await axiosConfig({
@@ -281,3 +297,59 @@ export const apiVisiblePost = (postId) => new Promise(async (resolve, reject) =>
         reject(error)
     }
 })
+
+export const apiGetCountPost = () => new Promise(async (resolve, reject) => {
+    try {
+        const response = await axiosConfig({
+            method: 'get',
+            url: '/api/v1/post/count-allPost',
+        })
+        resolve(response)
+
+    } catch (error) {
+        reject(error)
+    }
+})
+
+export const apiGetCountPostByThisMoth = () => new Promise(async (resolve, reject) => {
+    try {
+        const response = await axiosConfig({
+            method: 'get',
+            url: '/api/v1/post/count-this-month',
+        })
+        resolve(response)
+
+    } catch (error) {
+        reject(error)
+    }
+})
+
+
+export const apiGetCountPostByMoth = () => new Promise(async (resolve, reject) => {
+    try {
+        const response = await axiosConfig({
+            method: 'get',
+            url: '/api/v1/post/count-post-moth',
+        })
+        resolve(response)
+
+    } catch (error) {
+        reject(error)
+    }
+})
+
+export const apiGetCountPostByProvince = () => new Promise(async (resolve, reject) => {
+    try {
+        const response = await axiosConfig({
+            method: 'get',
+            url: '/api/v1/post/count-post-by-province',
+        })
+        resolve(response)
+
+    } catch (error) {
+        reject(error)
+    }
+})
+
+
+

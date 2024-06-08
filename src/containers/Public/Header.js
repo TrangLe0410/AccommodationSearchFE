@@ -140,6 +140,33 @@ const Header = () => {
         };
     }, []);
 
+    useEffect(() => {
+        if (isLoggedIn && currentData) {
+
+            const fetchUnreadCount = async () => {
+                try {
+                    const count = await fetchUnreadNotificationCount();
+                    setUnreadCount(count);
+                } catch (error) {
+                    console.error('Error fetching unread notification count:', error);
+                }
+            };
+            fetchUnreadCount();
+
+            // Connect to socket.io server
+            socketRef.current = io.connect("http://localhost:5000");
+
+            // Listen for socket events
+            socketRef.current.on('new_notification_created', fetchUnreadCount);
+
+            // Clean up
+            return () => {
+                socketRef.current.disconnect();
+                socketRef.current.off('new_notification_created', fetchUnreadCount);
+            };
+        }
+    }, [isLoggedIn, currentData]);
+
     return (
         <div ref={headerRef} className={`w-full h-[90px] ${isFixed ? 'fixed top-0 bg-white' : 'sticky top-0 bg-white'} flex items-center justify-center border-b border-solid border-black border-opacity-15 z-50`}>
             <div className="w-4/5 flex items-center justify-between ">
