@@ -1,6 +1,6 @@
 import actionTypes from './actionTypes'
 import * as apis from '../../services'
-
+import axiosConfig from '../../axiosConfig'
 
 export const getCurrent = () => async (dispatch) => {
     try {
@@ -50,3 +50,53 @@ export const getAllUser = () => async (dispatch) => {
         })
     }
 }
+
+export const lockUserAccount = (userId) => async (dispatch) => {
+    try {
+        const response = await apis.apiLockerUser(userId);
+        if (response?.data.err === 0) {
+            dispatch({
+                type: actionTypes.LOCK_USER,
+                payload: userId,
+                msg: response.data.msg
+            });
+        } else {
+            dispatch({
+                type: actionTypes.LOCK_USER_FAILURE,
+                msg: response.data.msg,
+            });
+        }
+    } catch (error) {
+        dispatch({
+            type: actionTypes.LOCK_USER_FAILURE,
+            msg: error.message,
+        });
+    }
+};
+
+export const unLockUserAccount = (userId) => async (dispatch) => {
+    try {
+        const response = await apis.apiUnLockerUser(userId);
+        if (response?.data.err === 0) {
+            dispatch({
+                type: actionTypes.UNLOCK_USER,
+                payload: userId,
+                msg: response.data.msg
+            });
+        } else {
+            dispatch({
+                type: actionTypes.UNLOCK_USER_FAILURE,
+                msg: response.data.msg,
+            });
+        }
+    } catch (error) {
+        dispatch({
+            type: actionTypes.LOCK_USER_FAILURE,
+            msg: error.message,
+        });
+    }
+};
+export const setUsers = users => ({
+    type: actionTypes.SET_USERS,
+    payload: users,
+});

@@ -69,3 +69,14 @@ export const apiGetPublicWards = (districtId) => new Promise(async (resolve, rej
         reject(error);
     }
 })
+
+export const apiCreateCheckoutSession = (selectedAmount) => new Promise(async (resolve, reject) => {
+    try {
+        const response = await axios.post('/api/v1/payment/create-checkout-session', {
+            price: selectedAmount
+        });
+        resolve(response);
+    } catch (error) {
+        reject(error);
+    }
+});

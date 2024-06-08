@@ -1,5 +1,5 @@
 import icons from './icons'
-
+import { GiPayMoney } from "react-icons/gi";
 const { ImPencil2, MdOutlineLibraryBooks, BiUserPin, FaCalendarAlt, FaRegCircleUser } = icons
 
 const memuSidebar = [
@@ -42,9 +42,9 @@ const memuSidebar = [
     },
     {
         id: 5,
-        text: 'Liên hệ',
-        path: '/he-thong/lien-he',
-        icon: <BiUserPin color='#fd0e35' />
+        text: 'Lịch sử nạp tiền',
+        path: '/he-thong/lich-su-nap-tien',
+        icon: <GiPayMoney color='#fd0e35' />
     },
 
 ]

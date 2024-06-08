@@ -22,9 +22,10 @@ export const path = {
     CREATE_POST: 'tao-moi-bai-dang',
     MANAGE_POST: 'quan-ly-bai-dang',
     ACCOUNT: 'thong-tin-ca-nhan',
-    // MANAGE_APPOINTMENT: 'quan-ly-lich-hen',
+    ADD_MONEY: 'nap-tien',
     PERSONNAL_APPOINTMENT: 'quan-ly-lich-hen/lich-hen-ca-nhan',
     SCHEDULED_APPOINTMENT: 'quan-ly-lich-hen/lich-hen-duoc-dat',
+    MONEY_ADD_HISTORY: 'lich-su-nap-tien',
 
     SAVED_POST: 'bai-dang-da-luu',
 
