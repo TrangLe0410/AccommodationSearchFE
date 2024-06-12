@@ -4,7 +4,7 @@ import { path } from './ultils/constant';
 import * as actions from './store/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import { System, CreatePost, ManagePost, EditAccount, ManageAppointment, PersonalAppointment, ScheduledAppointment, AddMoney } from './containers/System';
+import { System, CreatePost, ManagePost, EditAccount, ManageAppointment, PersonalAppointment, ScheduledAppointment, AddMoney, PostPayment, PaymentHistory } from './containers/System';
 import { Dashboard, ManageAllPost, ManageSystem, ManageUser } from './containers/Dashboard';
 import MoneyAddHistory from './containers/System/MoneyAddHistory';
 
@@ -50,6 +50,8 @@ function App() {
           <Route path={path.SCHEDULED_APPOINTMENT} element={<ScheduledAppointment />} />
           <Route path={path.ADD_MONEY} element={<AddMoney />} />
           <Route path={path.MONEY_ADD_HISTORY} element={<MoneyAddHistory />} />
+          <Route path={path.POST_PAYMENT} element={<PostPayment />} />
+          <Route path={path.PAYMENT_HISTORY} element={<PaymentHistory />} />
         </Route>
 
         <Route path={path.DASHBOARD} element={<Dashboard />}>
