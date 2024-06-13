@@ -3,11 +3,33 @@ import { Button, Item } from '../../components'
 import { getPosts, getPostsLimit } from '../../store/actions/post'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
+import { apiGetAllPaymentHistory } from '../../services'
+
 const List = ({ categoryCode }) => {
     const dispatch = useDispatch()
     const [searchParams] = useSearchParams()
     const { posts } = useSelector(state => state.post)
     const [sort, setSort] = useState(0)
+    const [paymentHistories, setPaymentHistoryAll] = useState([]);
+    // useEffect(() => {
+    //     dispatch(getPosts());
+    //     return () => {
+    //         dispatch({ type: 'CLEAR_POSTS' });
+    //     };
+    // }, [dispatch]);
+    useEffect(() => {
+        const fetchPaymentHistory = async () => {
+            try {
+                const data = await apiGetAllPaymentHistory();
+                setPaymentHistoryAll(data.paymentHistories); // Đặt dữ liệu trả về từ API vào state
+            } catch (error) {
+                console.error("Error fetching transaction history:", error);
+            }
+        };
+
+        fetchPaymentHistory();
+    }, []);
+
     useEffect(() => {
         let params = []
         for (let entry of searchParams.entries()) {
@@ -26,11 +48,25 @@ const List = ({ categoryCode }) => {
         dispatch(getPostsLimit(searchParamsObject))
     }, [searchParams, categoryCode, sort])
 
+    // Filter and prioritize posts
+    const filteredPosts = posts?.filter(post => post.status === 'Approved' && post.visibility === 'Visible');
+    const priorityPosts = filteredPosts?.filter(post => {
+        const paymentHistory = paymentHistories.find(ph => ph.postId === post.id);
+        return paymentHistory && paymentHistory?.status === 'Đã thanh toán' && paymentHistory?.typePost === 'priority';
+    });
+
+
+    const nonPriorityPosts = filteredPosts?.filter(post => {
+        const paymentHistory = paymentHistories.find(ph => ph.postId === post.id);
+        return !(paymentHistory && paymentHistory?.status === 'Đã thanh toán' && paymentHistory?.typePost === 'priority');
+    });
+
+    const sortedPosts = [...priorityPosts, ...nonPriorityPosts];
 
     return (
         <div className='w-full bg-white shadow-sm rounded-md border border-gray-300 p-6 items-start'>
             <div className='flex items-center justify-between'>
-                <h4 className='text-3xl text-[#0E2E50] font-semibold'> Danh sách bài đăng</h4>
+                <h4 className='text-3xl text-[#0E2E50] font-semibold'>Danh sách bài đăng</h4>
                 <div className='flex items-center gap-2 my-2'>
                     <div className='flex items-center gap-2 my-2'>
                         <span
@@ -46,15 +82,11 @@ const List = ({ categoryCode }) => {
                             Mới nhất
                         </span>
                     </div>
-
-
                 </div>
-
             </div>
 
             <div className='items mt-6'>
-                {posts?.length > 0 && posts
-                    .filter(item => item.status === 'Approved' && item.visibility === 'Visible') // Lọc ra những bài đăng có status là "Approved"
+                {sortedPosts?.length > 0 && sortedPosts
                     .map(item => (
                         <Item
                             key={item?.id}
@@ -69,7 +101,6 @@ const List = ({ categoryCode }) => {
                         />
                     ))}
             </div>
-
         </div>
     )
 }

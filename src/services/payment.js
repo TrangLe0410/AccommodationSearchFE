@@ -39,6 +39,7 @@ export const apiGetAllPaymentHistory = () => new Promise(async (resolve, reject)
             method: 'get',
             url: '/api/v1/payment/all-payment-history', // URL API lấy lịch sử giao dịch
         });
+        console.log(response.data)
         resolve(response.data);
     } catch (error) {
         reject(error);

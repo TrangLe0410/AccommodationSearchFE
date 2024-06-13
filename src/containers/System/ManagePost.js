@@ -10,6 +10,7 @@ import { formatVietnameseToString } from '../../ultils/Common/formatVietnameseTo
 import { path } from '../../ultils/constant';
 import { BiSolidHide } from "react-icons/bi";
 import { FaRegEye } from "react-icons/fa";
+import { MdPayment } from "react-icons/md";
 const ManagePost = () => {
     const dispatch = useDispatch()
     const [isEdit, setIsEdit] = useState(false)
@@ -217,17 +218,26 @@ const ManagePost = () => {
                                             {`${item?.title?.slice(0, 45)}...`}
                                         </Link>
                                         <p className='mt-1'>Địa chỉ: {item?.address}</p>
-                                        {item?.visibility === 'Hidden' ? (
-                                            <div className='flex gap-2 items-center mt-2'>
-                                                <FaRegEye size={20} onClick={() => handleVisiblePost(item.id)} />
-                                                <p>Hiển thị lại tin đăng</p>
+                                        <div className='flex items-center gap-4'>
+                                            {item?.visibility === 'Hidden' ? (
+                                                <div className='flex gap-2 items-center mt-2'>
+                                                    <FaRegEye size={20} onClick={() => handleVisiblePost(item.id)} />
+                                                    <p>Hiển thị lại tin đăng</p>
+                                                </div>
+                                            ) : (
+                                                <div className='flex gap-2 items-center mt-2'>
+                                                    <BiSolidHide onClick={() => handleHidePost(item.id)} size={20} />
+                                                    <p>Ẩn tin đăng</p>
+                                                </div>
+                                            )}
+                                            <div className='flex gap-1 items-center mt-2'>
+                                                <Link to={`/he-thong/thanh-toan-tin-dang?postId=${item?.id}&action=show`}>
+                                                    <MdPayment color='#055699' size={20} />
+                                                </Link>
+
+                                                <p>Thanh toán tin</p>
                                             </div>
-                                        ) : (
-                                            <div className='flex gap-2 items-center mt-2'>
-                                                <BiSolidHide onClick={() => handleHidePost(item.id)} size={20} />
-                                                <p>Ẩn tin đăng</p>
-                                            </div>
-                                        )}
+                                        </div>
                                         <div className='flex gap-2 mt-1 items-center text-gray-500'>
                                             <p> Cập nhật gần nhất:</p>
                                             <p>{moment(item.updatedAt).format('DD/MM/YYYY HH:mm:ss')}</p>
