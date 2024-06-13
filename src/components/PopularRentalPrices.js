@@ -34,8 +34,8 @@ const PopularRentalPrices = () => {
                     <h3 className="font-semibold text-xl my-4 flex items-center gap-4">Giá thuê phổ biến chuyên mục:
                         <p className='text-[#E03C31]'>{posts[0]?.labelData?.value}</p>
                     </h3>
-                    <div className='border flex border-gray-200 rounded-sm w-[80%] justify-between items-center mx-auto mt-6'>
-                        <div className="w-1/2 pr-2 relative">
+                    <div className='border flex border-gray-200 rounded-sm w-[40%] justify-between items-center mx-auto mt-6'>
+                        <div className="w-full pr-2 relative">
                             <div className='justify-center items-center'>
                                 <div className="pl-6 pt-1 flex items-center gap-2 text-lg text-[#E03C31] font-bold">
                                     <FcMoneyTransfer color='green' size={24} />
@@ -43,15 +43,9 @@ const PopularRentalPrices = () => {
                                 </div>
                                 <div className="pl-6 pt-1 text-gray-500">Giá thuê phổ biến nhất</div>
                             </div>
-                            <div className="absolute top-0 right-0 h-full bg-gray-200 w-px"></div>
+
                         </div>
-                        <div className="w-1/2">
-                            <div className='pl-6 pt-2 flex items-center gap-2'>
-                                <FaArrowAltCircleUp color='green' size={24} />
-                                <p className='text-lg font-bold'>16,7%</p>
-                            </div>
-                            <div className="pl-6 pt-1 text-gray-500">Biến động giá trong vòng 1 năm qua</div>
-                        </div>
+
                     </div>
                     <h3 className="font-semibold  my-4 flex items-center gap-4">So sánh giá với các quận còn lại:</h3>
                     <div className="relative overflow-x-auto shadow-md sm:rounded-lg mx-auto w-[80%]">

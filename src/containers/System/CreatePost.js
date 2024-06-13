@@ -134,10 +134,14 @@ const CreatePost = ({ isEdit }) => {
                 }
             } else {
                 const response = await apiCreatePost(finalPayload)
+
+
                 if (response?.data.err === 0) {
                     Swal.fire('Thành công', 'Tạo bài đăng thành công', 'success').then(() => {
                         resetPayload()
-                        navigate('/he-thong/quan-ly-bai-dang');
+                        const postId = response?.data?.postNew[0]?.id;
+
+                        navigate(`/he-thong/thanh-toan-tin-dang?postId=${postId}`);
                     })
                 } else {
                     Swal.fire('Oops!', 'Tạo mới thất bại', 'error')

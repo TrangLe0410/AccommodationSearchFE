@@ -25,9 +25,7 @@ const List = ({ categoryCode }) => {
         if (sort === 1) searchParamsObject.order = ['createdAt', 'DESC']
         dispatch(getPostsLimit(searchParamsObject))
     }, [searchParams, categoryCode, sort])
-    // useEffect(() => {
-    //     dispatch(getPosts())
-    // })
+
 
     return (
         <div className='w-full bg-white shadow-sm rounded-md border border-gray-300 p-6 items-start'>

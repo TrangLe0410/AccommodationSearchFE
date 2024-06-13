@@ -26,6 +26,8 @@ export const path = {
     PERSONNAL_APPOINTMENT: 'quan-ly-lich-hen/lich-hen-ca-nhan',
     SCHEDULED_APPOINTMENT: 'quan-ly-lich-hen/lich-hen-duoc-dat',
     MONEY_ADD_HISTORY: 'lich-su-nap-tien',
+    PAYMENT_HISTORY: 'lich-su-thanh-toan',
+    POST_PAYMENT: 'thanh-toan-tin-dang',
 
     SAVED_POST: 'bai-dang-da-luu',
 
