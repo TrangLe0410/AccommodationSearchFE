@@ -4,7 +4,7 @@ import { GiPayMoney } from "react-icons/gi";
 import { MdOutlinePayment } from "react-icons/md";
 import { useDispatch, useSelector } from 'react-redux';
 import { getCurrent } from '../../store/actions';
-import { useHistory, useNavigate } from 'react-router-dom'; // Import useHistory từ react-router-dom
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const AddMoney = () => {
     const topUpOptions = [
@@ -17,6 +17,14 @@ const AddMoney = () => {
 
     const [selectedAmount, setSelectedAmount] = useState(null);
     const [customAmount, setCustomAmount] = useState('');
+    const { search } = useLocation();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { currentData } = useSelector(state => state.user);
+
+    useEffect(() => {
+        dispatch(getCurrent());
+    }, [dispatch]);
 
     const handleSelectAmount = (amount) => {
         setSelectedAmount(amount);
@@ -27,15 +35,6 @@ const AddMoney = () => {
         setCustomAmount(event.target.value);
         setSelectedAmount(null);
     };
-
-    const dispatch = useDispatch();
-    const { currentData } = useSelector(state => state.user);
-
-    useEffect(() => {
-        dispatch(getCurrent());
-    }, [dispatch]);
-
-    const navigate = useNavigate(); // Khởi tạo useHistory
 
     const handlePay = async () => {
         try {
@@ -51,20 +50,40 @@ const AddMoney = () => {
             console.error("Error creating checkout session:", error);
         }
     };
+    const [statusMessage, setStatusMessage] = useState('');
 
     const handlePaymentSuccess = async (session_id) => {
         try {
-            await axiosConfig.post('/api/v1/payment/payment-success', { session_id });
-            alert('Thanh toán thành công và số dư đã được cập nhật.');
-            // Optionally redirect or update the UI
+            const response = await axiosConfig.post('/api/v1/payment/payment-success', { session_id });
+            if (response.data.success) {
+                setStatusMessage('Thanh toán thành công và số dư đã được cập nhật.');
+                dispatch(getCurrent());
+                setTimeout(() => {
+                    setStatusMessage('');
+                    // Reset URL về lại /he-thong/nap-tien mà không tải lại trang
+                    window.history.replaceState(null, '', '/he-thong/nap-tien');
+                }, 1000); // Đợi 3 giây trước khi xóa thông báo và reset URL
+            } else {
+                setStatusMessage('Có lỗi xảy ra khi cập nhật số dư.');
+            }
         } catch (error) {
             console.error("Error updating balance:", error);
-            alert('Có lỗi xảy ra khi cập nhật số dư.');
+            setStatusMessage('Có lỗi xảy ra khi cập nhật số dư.');
         }
     };
 
-    const navigateToHistory = () => {
+    useEffect(() => {
+        const urlParams = new URLSearchParams(search);
+        const sessionId = urlParams.get('session_id');
+        const success = urlParams.get('success');
 
+        if (success === 'true' && sessionId) {
+            handlePaymentSuccess(sessionId);
+        }
+    }, [search]);
+
+
+    const navigateToHistory = () => {
         navigate('/he-thong/lich-su-nap-tien');
     };
 
@@ -119,8 +138,8 @@ const AddMoney = () => {
                     </button>
                     <button
                         type='button'
-                        onClick={handlePaymentSuccess}
                         className='w-1/2 mt-4 outline-none py-2 px-4 rounded-md bg-[#0E2E50] text-base flex items-center justify-center gap-2 text-white font-medium hover:shadow-lg'
+                        onClick={() => navigate('/he-thong/lich-su-thanh-toan')}
                     >
                         <MdOutlinePayment color='white' />
                         Lịch sử thanh toán

@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import * as actions from '../../store/actions'
 import moment from "moment"
 import { Button, UpdatePost } from '../../components'
-import { apiDeletePost, apiHidePost, apiVisiblePost } from '../../services'
+import { apiDeletePost, apiGetPaymentHistory, apiHidePost, apiVisiblePost } from '../../services'
 import Swal from 'sweetalert2'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { formatVietnameseToString } from '../../ultils/Common/formatVietnameseToString';
 import { path } from '../../ultils/constant';
 import { BiSolidHide } from "react-icons/bi";
@@ -18,6 +18,25 @@ const ManagePost = () => {
     const [posts, setPosts] = useState([])
     const [status, setStatus] = useState('0')
     const [filteredPosts, setFilteredPosts] = useState([]);
+    const navigate = useNavigate();
+
+    const [paymentHistory, setPaymentHistory] = useState([]);
+    useEffect(() => {
+        const fetchPaymentHistory = async () => {
+            try {
+                const data = await apiGetPaymentHistory();
+                setPaymentHistory(data.paymentHistory); // Đặt dữ liệu trả về từ API vào state
+            } catch (error) {
+                console.error("Error fetching transaction history:", error);
+            }
+        };
+
+        fetchPaymentHistory();
+    }, []);
+    const getPaymentStatus = (postId) => {
+        const payment = paymentHistory.find(item => item.postId === postId);
+        return payment ? payment.status : 'Chưa thanh toán';
+    };
 
 
     useEffect(() => {
@@ -113,32 +132,27 @@ const ManagePost = () => {
     };
 
     const handleVisiblePost = async (postId) => {
-        // Kiểm tra nếu trạng thái của bài đăng không phải là 'Visible'
         const post = filteredPosts.find(item => item.id === postId);
-        console.log(post)
         if (!post || post.visibility === 'Visible') {
             Swal.fire('Thông báo', 'Bài đăng đang hiển thị!', 'warning');
             return;
         }
 
-        // Hiển thị hộp thoại xác nhận của SweetAlert2
         const result = await Swal.fire({
             title: 'Bạn chắc chắn muốn hiển thị lại bài đăng?',
-            text: 'Bài đăng của bạn sẽ hiển thị lên danh sách',
+            text: 'Thanh toán phí để đăng lại tin',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Có',
             cancelButtonText: 'Không'
         });
 
-        // Nếu người dùng chọn xác nhận
         if (result.isConfirmed) {
             try {
                 const response = await apiVisiblePost(postId);
                 if (response?.data.err === 0) {
-                    // Nếu API ẩn bài đăng thành công, cập nhật lại danh sách bài đăng
                     setUpdateData(prev => !prev);
-                    Swal.fire('Thành công', 'Hiển thị bài đăng thành công', 'success');
+                    navigate(`/he-thong/thanh-toan-tin-dang?postId=${postId}&action=show`);
                 } else {
                     Swal.fire('Oops!', 'Hiển thị bài đăng thất bại', 'error');
                 }
@@ -148,6 +162,7 @@ const ManagePost = () => {
             }
         }
     };
+
 
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage] = useState(3);
@@ -181,6 +196,7 @@ const ManagePost = () => {
                         <th className='border w-[40%] p-2'>Tiêu đề</th>
                         <th className='border w-[10%] p-2'>Gía</th>
                         <th className='border w-[10%] p-2'>Trạng thái</th>
+                        <th className='border w-[12%] p-2'>Thanh toán</th>
                         <th className='border w-[10%] p-2'>Tùy chọn</th>
                     </tr>
                 </thead>
@@ -212,7 +228,7 @@ const ManagePost = () => {
                                                 <p>Ẩn tin đăng</p>
                                             </div>
                                         )}
-                                        <div className='flex gap-2 mt-1 items-center'>
+                                        <div className='flex gap-2 mt-1 items-center text-gray-500'>
                                             <p> Cập nhật gần nhất:</p>
                                             <p>{moment(item.updatedAt).format('DD/MM/YYYY HH:mm:ss')}</p>
                                         </div>
@@ -231,6 +247,11 @@ const ManagePost = () => {
                                         {item?.visibility === 'Hidden' && item?.status === 'Approved' && (
                                             <span className='text-red-500'>Tin đã ẩn</span>
                                         )}
+                                    </td>
+                                    <td className='border px-2 w-[12%] h-full text-center flex justify-center items-center'>
+                                        <span className={getPaymentStatus(item.id) === 'Đã thanh toán' ? 'bg-green-500 border-green-500 p-1 text-white font-semibold' : 'bg-red-500 border-red-500 p-1 text-white font-semibold'}>
+                                            {getPaymentStatus(item.id)}
+                                        </span>
                                     </td>
                                     <td className='border px-2 w-[10%] h-full text-center items-center  flex gap-2 justify-center'>
                                         <Button

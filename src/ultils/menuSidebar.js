@@ -1,5 +1,6 @@
 import icons from './icons'
 import { GiPayMoney } from "react-icons/gi";
+import { MdOutlinePayment } from "react-icons/md";
 const { ImPencil2, MdOutlineLibraryBooks, BiUserPin, FaCalendarAlt, FaRegCircleUser } = icons
 
 const memuSidebar = [
@@ -46,6 +47,13 @@ const memuSidebar = [
         path: '/he-thong/lich-su-nap-tien',
         icon: <GiPayMoney color='#fd0e35' />
     },
+    {
+        id: 5,
+        text: 'Lịch sử thanh toán',
+        path: '/he-thong/lich-su-thanh-toan',
+        icon: <MdOutlinePayment color='#808080' />
+    },
+
 
 ]
 
