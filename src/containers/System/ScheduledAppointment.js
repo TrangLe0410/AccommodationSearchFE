@@ -11,7 +11,7 @@ import { deleteAppointment } from '../../services/appointment'; // Import hàm x
 import io from 'socket.io-client';
 import { CustomCalendar } from '../../components';
 
-const socket = io.connect("http://localhost:5000");
+const socket = io.connect("http://3.107.49.162:5000");
 const { MdDeleteForever, IoMdCheckmarkCircle, MdCancel } = icons;
 
 const ScheduledAppointment = () => {

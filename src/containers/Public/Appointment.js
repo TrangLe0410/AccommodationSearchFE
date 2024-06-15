@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2'
 import { io } from "socket.io-client";
 import { fetchAppointments } from '../../store/actions';
-const socket = io.connect("http://localhost:5000");
+const socket = io.connect("http://3.107.49.162:5000");
 const Appointment = () => {
     const { postId } = useParams();
     const { posts } = useSelector(state => state.post)

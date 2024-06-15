@@ -15,7 +15,7 @@ import io from 'socket.io-client';
 import { FaHashtag } from "react-icons/fa";
 import { createNewChatRoom } from '../../services/chat'
 
-const socket = io.connect("http://localhost:5000");
+const socket = io.connect("http://3.107.49.162:5000");
 
 const { GrStar, MdLocationPin, TbReportMoney, RiCrop2Line, FaRegClock, FaPhoneAlt, IoCalendarNumberOutline, HiOutlineChatBubbleLeftRight, GiPayMoney, LuBarChart3, SiZalo, HiLocationMarker } = icons
 

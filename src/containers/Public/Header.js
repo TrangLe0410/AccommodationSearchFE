@@ -86,7 +86,7 @@ const Header = () => {
         dispatch(actions.fetchTotalUnreadMessages());
 
         // Connect to socket.io server
-        socketRef.current = io.connect("http://localhost:5000");
+        socketRef.current = io.connect("http://3.107.49.162:5000");
 
         socketRef.current.on('new_message', (message) => {
             dispatch(actions.fetchTotalUnreadMessages());
@@ -151,7 +151,7 @@ const Header = () => {
             fetchUnreadCount();
 
             // Connect to socket.io server
-            socketRef.current = io.connect("http://localhost:5000");
+            socketRef.current = io.connect("http://3.107.49.162:5000");
 
             // Listen for socket events
             socketRef.current.on('new_notification_created', fetchUnreadCount);
