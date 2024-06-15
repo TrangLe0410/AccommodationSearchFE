@@ -37,11 +37,6 @@ const Homepage = () => {
                 <div className='w-[70%]' >
                     <List />
                     <Pagination />
-
-
-
-
-
                 </div>
                 <div className='w-[30%] flex flex-col justify-start items-center'>
                     <div className="mb-5 w-full p-4 text-[#0E2E50] bg-white border border-gray-300 shadow-sm rounded-md">

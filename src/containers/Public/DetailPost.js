@@ -12,6 +12,7 @@ import { Appointment, Chat, ListCardItem } from "./index"
 import MapBox from '../../components/MapBox'
 import Swal from 'sweetalert2'
 import io from 'socket.io-client';
+import { FaHashtag } from "react-icons/fa";
 import { createNewChatRoom } from '../../services/chat'
 
 const socket = io.connect("http://localhost:5000");
@@ -145,7 +146,7 @@ const DetailPost = () => {
                             <MdLocationPin size={20} color='#009472' />
                             <span>{posts[0]?.address}</span>
                         </div>
-                        <div className='flex items-center gap-16'>
+                        <div className='flex items-center gap-14'>
                             <span className='flex items-center gap-3'>
                                 <TbReportMoney size={20} color='#009472' />
                                 <span className='font-semibold text-xl text-[#009472]'>{posts[0]?.attributes?.price}</span>
@@ -157,6 +158,11 @@ const DetailPost = () => {
                             <span className='flex items-center gap-3'>
                                 <FaRegClock size={20} color='#009472' />
                                 <span>{posts[0]?.attributes?.published}</span>
+
+                            </span>
+                            <span className='flex items-center gap-3'>
+                                <FaHashtag size={20} color='#009472' />
+                                <span>{posts[0]?.overviews?.code}</span>
 
                             </span>
                         </div>
