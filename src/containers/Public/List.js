@@ -18,9 +18,7 @@ const List = ({ categoryCode }) => {
         const fetchPaymentHistoryAll = async () => {
             try {
                 const data = await apiGetAllPaymentHistory();
-                setPaymentHistoryAll(data.paymentHistories); // Đặt dữ liệu trả về từ API vào state
-
-
+                setPaymentHistoryAll(data.paymentHistories);
             } catch (error) {
                 console.error("Error fetching transaction history:", error);
             }
@@ -28,6 +26,7 @@ const List = ({ categoryCode }) => {
 
         fetchPaymentHistoryAll();
     }, [dispatch]);
+
     useEffect(() => {
         const fetchAllPosts = async () => {
             try {
@@ -47,8 +46,8 @@ const List = ({ categoryCode }) => {
             params.push(entry);
         }
         let searchParamsObject = {};
-        params?.forEach(i => {
-            if (Object.keys(searchParamsObject)?.some(item => item === i[0])) {
+        params.forEach(i => {
+            if (Object.keys(searchParamsObject).some(item => item === i[0])) {
                 searchParamsObject[i[0]] = [...searchParamsObject[i[0]], i[1]];
             } else {
                 searchParamsObject = { ...searchParamsObject, [i[0]]: [i[1]] };
@@ -56,7 +55,7 @@ const List = ({ categoryCode }) => {
         });
         if (categoryCode) searchParamsObject.categoryCode = categoryCode;
         if (sort === 1) {
-
+         
         } else if (sort === 2) {
             searchParamsObject.order = ['createdAt', 'DESC'];
         }
@@ -68,14 +67,13 @@ const List = ({ categoryCode }) => {
             history.postId === post.id && history.status === 'Đã thanh toán' && history.typePost === 'priority'
         )
     );
-    const regularPosts = posts.filter(post =>
-        !(paymentHistories.some(history =>
-            history.postId === post.id && history.status === 'Đã thanh toán' && history.typePost === 'priority'
-        ))
-    );
-    const finalPosts = [...prioritizedPosts, ...regularPosts].filter(post =>
-        post.status === 'Approved' && post.visibility === 'Visible'
-    );
+
+    // Check if there is any categoryCode or other search params
+    const shouldShowPrioritizedPosts = !categoryCode && !Array.from(searchParams.entries()).length;
+
+    const finalPosts = shouldShowPrioritizedPosts
+        ? [...prioritizedPosts, ...posts.filter(post => post.status === 'Approved' && post.visibility === 'Visible')]
+        : posts.filter(post => post.status === 'Approved' && post.visibility === 'Visible');
 
     return (
         <div className='w-full bg-white shadow-sm rounded-md border border-gray-300 p-6 items-start'>
@@ -86,7 +84,7 @@ const List = ({ categoryCode }) => {
                         <span
                             onClick={() => {
                                 setSort(1);
-                                setIsDefaultSort(true); // Sắp xếp theo mặc định
+                                setIsDefaultSort(true);
                             }}
                             className={`border p-1 rounded-md cursor-pointer ${sort === 1 ? 'bg-[#00B98E] border-[#00B98E] text-white' : 'bg-white border-[#00B98E] text-[#0e2e50] hover:bg-[#00B98E] hover:text-white'}`}
                         >
@@ -95,7 +93,7 @@ const List = ({ categoryCode }) => {
                         <span
                             onClick={() => {
                                 setSort(2);
-                                setIsDefaultSort(false); // Sắp xếp theo mới nhất
+                                setIsDefaultSort(false);
                             }}
                             className={`border p-1 rounded-md cursor-pointer ${sort === 2 ? 'bg-[#00B98E] border-[#00B98E] text-white' : 'bg-white border-[#00B98E] text-[#0e2e50] hover:bg-[#00B98E] hover:text-white'}`}
                         >
@@ -106,23 +104,25 @@ const List = ({ categoryCode }) => {
             </div>
 
             <div className='items mt-6'>
-                {isDefaultSort ? ( // Sử dụng state để quyết định việc hiển thị
-                    finalPosts.length > 0 && finalPosts.map(item => (
-                        <Item
-                            key={item?.id}
-                            address={item?.address}
-                            attributes={item?.attributes}
-                            description={JSON.parse(item?.description)}
-                            images={JSON.parse(item?.images?.image)}
-                            star={+item?.star}
-                            title={item?.title}
-                            user={item?.user}
-                            id={item?.id}
-                        />
-                    ))
+                {isDefaultSort ? (
+                    finalPosts.length > 0 && finalPosts
+                        .filter(item => item.status === 'Approved' && item.visibility === 'Visible')
+                        .map(item => (
+                            <Item
+                                key={item?.id}
+                                address={item?.address}
+                                attributes={item?.attributes}
+                                description={JSON.parse(item?.description)}
+                                images={JSON.parse(item?.images?.image)}
+                                star={+item?.star}
+                                title={item?.title}
+                                user={item?.user}
+                                id={item?.id}
+                            />
+                        ))
                 ) : (
-                    posts?.length > 0 && posts
-                        .filter(item => item.status === 'Approved' && item.visibility === 'Visible') // Lọc ra những bài đăng có status là "Approved"
+                    posts.length > 0 && posts
+                        .filter(item => item.status === 'Approved' && item.visibility === 'Visible')
                         .map(item => (
                             <Item
                                 key={item?.id}
@@ -140,7 +140,6 @@ const List = ({ categoryCode }) => {
             </div>
         </div>
     );
-
 };
 
 export default List;

@@ -22,9 +22,6 @@ const Header = () => {
     const [unreadCount, setUnreadCount] = useState(0);
 
 
-
-
-
     const [isShowMenu, setIsShowMenu] = useState(false)
     const [showChat, setShowChat] = useState(false);
     const goLogin = useCallback(() => {
