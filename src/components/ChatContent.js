@@ -5,7 +5,7 @@ import { IoIosCloseCircle } from "react-icons/io";
 import moment from 'moment-timezone';
 import io from 'socket.io-client';
 
-const socket = io.connect("http://localhost:5000");
+const socket = io.connect("http://3.107.49.162:5000");
 const ChatContent = ({ chatUsers, onClose, conversationId }) => {
     const dispatch = useDispatch();
     const [currentMessage, setCurrentMessage] = useState("");

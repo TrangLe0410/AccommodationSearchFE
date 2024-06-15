@@ -5,7 +5,7 @@ import * as actions from '../store/actions';
 import io from 'socket.io-client';
 import { getMessageLastedByRoom, getUnreadMessagesCount } from '../services/messages';
 import moment from 'moment-timezone';
-const socket = io.connect("http://localhost:5000");
+const socket = io.connect("http://3.107.49.162:5000");
 const ChatSiderBar = ({ onRoomClick, selectedConversationId }) => {
     const dispatch = useDispatch();
     const [selectedRoom, setSelectedRoom] = useState(null);
