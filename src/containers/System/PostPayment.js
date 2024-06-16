@@ -150,9 +150,7 @@ const PostPayment = () => {
                                 <span className='ml-2'>Thẻ tín dụng/Ghi nợ</span>
                             </label>
                             <div className='flex items-center gap-2 ml-4'>
-                                <div className='border mt-2 border-gray-300 rounded-md w-16 h-8 bg-gray-100 flex justify-center items-center'>
-                                    <img src='https://w7.pngwing.com/pngs/431/78/png-transparent-stripe-payment-gateway-business-payment-processor-stripe-blue-company-text.png' alt='stripe' className='w-12 object-cover' />
-                                </div>
+
                                 <div className='border mt-2 border-gray-300 rounded-md w-16 h-8 bg-gray-100 flex justify-center items-center'>
                                     <img src={visa} alt='visa' className='w-12 object-cover' />
                                 </div>
