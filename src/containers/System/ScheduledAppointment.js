@@ -75,7 +75,12 @@ const ScheduledAppointment = () => {
         }
     };
     useEffect(() => {
-        setFilteredAppointments(appointmentsPosters); // Update filteredAppointment whenever appointmentData changes
+        const currentDate = new Date();
+        const filtered = appointmentsPosters.filter(appointment => {
+            const appointmentDate = new Date(appointment.appointmentDate);
+            return appointmentDate >= currentDate;
+        });
+        setFilteredAppointments(filtered); // Update filteredAppointment whenever appointmentData changes
     }, [appointmentsPosters]);
 
     const handleApproveAppointment = async (appointmentId) => {

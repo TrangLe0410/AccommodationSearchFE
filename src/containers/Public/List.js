@@ -55,7 +55,7 @@ const List = ({ categoryCode }) => {
         });
         if (categoryCode) searchParamsObject.categoryCode = categoryCode;
         if (sort === 1) {
-         
+
         } else if (sort === 2) {
             searchParamsObject.order = ['createdAt', 'DESC'];
         }

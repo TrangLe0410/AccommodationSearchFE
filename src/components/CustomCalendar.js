@@ -32,25 +32,33 @@ const CustomCalendar = () => {
 
     useEffect(() => {
         if (appointmentsPosters) {
-            const eventsData = appointmentsPosters.map(appointment => {
-                const post = posts.find(post => post.id === appointment.postId);
-                const requester = users.find(user => user.id === appointment.appointmentRequesterID);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Set to start of the day to exclude today's appointments
 
-                const appointmentDate = new Date(appointment.appointmentDate);
-                const [hours, minutes] = appointment.appointmentTime.split(':');
-                appointmentDate.setHours(hours);
-                appointmentDate.setMinutes(minutes);
+            const eventsData = appointmentsPosters
+                .filter(appointment => {
+                    const appointmentDate = new Date(appointment.appointmentDate);
+                    return appointmentDate > today;
+                })
+                .map(appointment => {
+                    const post = posts.find(post => post.id === appointment.postId);
+                    const requester = users.find(user => user.id === appointment.appointmentRequesterID);
 
-                return {
-                    id: appointment.id,
-                    title: requester ? requester.name : 'Unknown Title',
-                    start: appointmentDate,
-                    end: appointmentDate,
-                    allDay: false,
-                    status: appointment.status,
-                    content: appointment.content,
-                };
-            });
+                    const appointmentDate = new Date(appointment.appointmentDate);
+                    const [hours, minutes] = appointment.appointmentTime.split(':');
+                    appointmentDate.setHours(hours);
+                    appointmentDate.setMinutes(minutes);
+
+                    return {
+                        id: appointment.id,
+                        title: requester ? requester.name : 'Unknown Title',
+                        start: appointmentDate,
+                        end: appointmentDate,
+                        allDay: false,
+                        status: appointment.status,
+                        content: appointment.content,
+                    };
+                });
             setEvents(eventsData);
         }
     }, [appointmentsPosters, posts, users]);
