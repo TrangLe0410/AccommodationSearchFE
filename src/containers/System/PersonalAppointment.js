@@ -68,8 +68,14 @@ const PersonalAppointment = () => {
             }
         }
     };
+
     useEffect(() => {
-        setFilteredAppointments(appointmentRequesters);
+        const currentDate = new Date();
+        const filtered = appointmentRequesters.filter(appointment => {
+            const appointmentDate = new Date(appointment.appointmentDate);
+            return appointmentDate >= currentDate;
+        });
+        setFilteredAppointments(filtered); // Update filteredAppointment whenever appointmentData changes
     }, [appointmentRequesters]);
 
 

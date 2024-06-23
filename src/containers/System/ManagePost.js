@@ -196,8 +196,8 @@ const ManagePost = () => {
                         <th className='border w-[20%] p-2'>Ảnh đại diện</th>
                         <th className='border w-[40%] p-2'>Tiêu đề</th>
                         <th className='border w-[10%] p-2'>Gía</th>
-                        <th className='border w-[10%] p-2'>Trạng thái</th>
-                        <th className='border w-[12%] p-2'>Thanh toán</th>
+                        <th className='border w-[12%] p-2'>Trạng thái</th>
+                        <th className='border w-[13%] p-2'>Thanh toán</th>
                         <th className='border w-[10%] p-2'>Tùy chọn</th>
                     </tr>
                 </thead>
@@ -247,7 +247,7 @@ const ManagePost = () => {
                                     <td className='border px-2 w-[10%] h-full text-center flex justify-center items-center '> {item?.attributes?.price}</td>
                                     {/* <td className='border px-2  h-full text-center '> {item?.overviews?.created}</td>
                                     <td className='border px-2  h-full text-center '> {item?.overviews?.expired}</td> */}
-                                    <td className='border px-2 w-[10%] h-full text-center flex justify-center items-center'>
+                                    <td className='border px-2 w-[12%] h-full text-center flex justify-center items-center'>
                                         {item.status === 'Pending' && item?.visibility === 'Visible' && (
                                             <span className='   text-yellow-500 '>Tin đang chờ xét duyệt</span>
                                         )}
@@ -258,7 +258,7 @@ const ManagePost = () => {
                                             <span className='text-red-500'>Tin đã ẩn</span>
                                         )}
                                     </td>
-                                    <td className='border px-2 w-[12%] h-full text-center flex justify-center items-center'>
+                                    <td className='border px-2 w-[13%] h-full text-center flex justify-center items-center'>
                                         <span className={getPaymentStatus(item.id) === 'Đã thanh toán' ? 'bg-green-500 border-green-500 p-1 text-white font-semibold' : 'bg-red-500 border-red-500 p-1 text-white font-semibold'}>
                                             {getPaymentStatus(item.id)}
                                         </span>

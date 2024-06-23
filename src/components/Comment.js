@@ -56,13 +56,14 @@ const Comment = () => {
             dispatch(createCommentRequest(userId, postId, content, rating));
             await createNewCommentService(userId, postId, content, rating);
 
-            // Sau khi đăng bình luận thành công, gọi API updatePostStars để tính toán lại số sao
-            await updatePostStarsService(); // Gọi hàm updatePostStars
+
 
             setCommentContent('');
             fetchComments();
             setIsPopupVisible(false);
             setCommentSuccess(true);
+            // Sau khi đăng bình luận thành công, gọi API updatePostStars để tính toán lại số sao
+            await updatePostStarsService(); // Gọi hàm updatePostStars
         } catch (error) {
             console.error('Failed to create comment:', error);
         }
@@ -121,10 +122,8 @@ const Comment = () => {
             // Thực hiện xóa bình luận bằng cách gọi deleteCommentService với selectedComment.id
             await deleteCommentService(selectedComment.id);
 
-            // Xóa bình luận thành công, cập nhật danh sách bình luận
-            // Sau khi đăng bình luận thành công, gọi API updatePostStars để tính toán lại số sao
-            await updatePostStarsService(); // Gọi hàm updatePostStars
             await fetchComments(); // Gọi lại hàm fetchComments để cập nhật danh sách bình luận mới
+            await updatePostStarsService(); // Gọi hàm updatePostStars
         } catch (error) {
 
 
@@ -224,7 +223,7 @@ const Comment = () => {
                 )}
                 <button
                     type="button"
-                    className="px-2.5 py-1.5 ml-[685px] rounded-md cursor-pointer text-white bg-[#0E2E50] mt-6"
+                    className="px-2.5 py-1.5 ml-[675px] rounded-md cursor-pointer text-white bg-[#0E2E50] mt-6"
                     onClick={handleRatingClick}
                 >
                     Viết đánh giá
